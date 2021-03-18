@@ -1,11 +1,9 @@
-import 'file:///E:/Flutter/app_movie/app_movie/lib/screens/favorite/favorite_screen.dart';
-import 'file:///E:/Flutter/app_movie/app_movie/lib/screens/movie/movie_screen.dart';
-import 'file:///E:/Flutter/app_movie/app_movie/lib/screens/near_me/near_me_screen.dart';
-import 'file:///E:/Flutter/app_movie/app_movie/lib/screens/profile/profile_sreen.dart';
-import 'file:///E:/Flutter/app_movie/app_movie/lib/screens/trend/trend_screen.dart';
-import 'package:app_movie/bloc/trending_bloc.dart';
+
+import 'package:app_movie/screens/favorite/favorite_screen.dart';
+import 'package:app_movie/screens/movie/movie_screen.dart';
+import 'package:app_movie/screens/near_me/near_me_screen.dart';
+import 'package:app_movie/screens/profile/profile_sreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class MainScreen extends StatefulWidget {
   static const String routerName = 'main';
@@ -23,7 +21,6 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     list = <Widget>[
       MovieScreen(),
-      TrendScreen(),
       NearMeScreen(),
       FavoriteScreen(),
       ProfileScreen()
@@ -45,9 +42,6 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (int index) {
           setState(() {
             _index = index;
-            if (_index == 1) {
-              trendingBloc.getTrending(page: 1);
-            }
           });
         },
         items: <BottomNavigationBarItem>[

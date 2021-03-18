@@ -55,25 +55,6 @@ class _ServiceApi implements ServiceApi {
   }
 
   @override
-  Future<GenericCollection<Trend>> getTrending(page) async {
-    ArgumentError.checkNotNull(page, 'page');
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>(
-        'trending/all/week?api_key=095a1beb261c7c8385ebb67348b42df7&page=$page',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'GET',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            baseUrl: baseUrl),
-        data: _data);
-    final value = GenericCollection<Trend>.fromJson(_result.data);
-    return value;
-  }
-
-  @override
   Future<MovieDetail> getDetailMovie(id) async {
     ArgumentError.checkNotNull(id, 'id');
     const _extra = <String, dynamic>{};

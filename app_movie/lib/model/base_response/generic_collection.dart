@@ -1,6 +1,5 @@
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/reviews.dart';
-import 'package:app_movie/model/trend.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'generic_collection.g.dart';
@@ -31,9 +30,7 @@ class _Converter<T> implements JsonConverter<T, Object> {
 
   @override
   T fromJson(Object json) {
-    if (json is Map<String, dynamic> && json.containsKey('releaseDate')) {
-        return Trend.fromJson(json) as T;
-    }
+
     if (json is Map<String, dynamic> && json.containsKey('poster_path')) {
       return Movie.fromJson(json) as T;
     }
