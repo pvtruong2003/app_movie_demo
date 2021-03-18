@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
       children: <Widget>[
         Positioned(
             width: MediaQuery.of(context).size.width,
-            bottom: 12,
+            bottom: 32,
             child: const Center(
                 child: CircularProgressIndicator(
               backgroundColor: Colors.white,
