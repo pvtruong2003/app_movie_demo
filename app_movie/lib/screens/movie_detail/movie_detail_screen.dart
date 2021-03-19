@@ -1,3 +1,4 @@
+import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/movie_detail_bloc.dart';
 import 'package:app_movie/display_connect_internet.dart';
 import 'package:app_movie/model/cart.dart';
@@ -28,8 +29,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<MovieDetail>(
+    return AppContainer(
+      hidePadding: true,
+      child: StreamBuilder<MovieDetail>(
           stream: movieDetailBloc.movieDetail,
           builder: (BuildContext context, AsyncSnapshot<MovieDetail> snapshot) {
             if (snapshot.hasData) {
@@ -185,6 +187,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               child: StreamBuilder<List<Cart>>(
                   stream: movieDetailBloc.cart,
                   builder: (BuildContext context, AsyncSnapshot<List<Cart>> snapshot) {
+
                     return Container(
                       padding: const EdgeInsets.all(4.0),
                       decoration: const BoxDecoration(

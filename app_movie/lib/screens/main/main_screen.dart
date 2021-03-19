@@ -1,4 +1,5 @@
 
+import 'package:app_movie/app_container.dart';
 import 'package:app_movie/screens/favorite/favorite_screen.dart';
 import 'package:app_movie/screens/movie/movie_screen.dart';
 import 'package:app_movie/screens/near_me/near_me_screen.dart';
@@ -12,41 +13,46 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-
   int _index = 0;
-  List<Widget> list = <Widget>[];
+
+  Widget currentScreen = MovieScreen();
+  final List<Widget> pageList = <Widget>[];
 
   @override
   void initState() {
+    pageList.add(MovieScreen());
+    pageList.add(NearMeScreen());
+    pageList.add(FavoriteScreen());
+    pageList.add(ProfileScreen());
     super.initState();
-    list = <Widget>[
-      MovieScreen(),
-      NearMeScreen(),
-      FavoriteScreen(),
-      ProfileScreen()
-    ];
   }
+  final PageStorageBucket bucket = PageStorageBucket();
+
 
   @override
   Widget build(BuildContext context) {
-    print('------------------>');
-    final ContentInherit  contentInherit = ContentInherit.of(context);
-    return Scaffold(
-      body: ContentInherit(
-          index: _index,
-          child: IndexedStack(
-            index: _index,
-            children: list,
-          )),
+    Widget child;
+    switch(_index) {
+      case 0 : child = MovieScreen(); break;
+      case 1 : child = NearMeScreen(); break;
+      case 2 : child = FavoriteScreen(); break;
+      case 3 : child = ProfileScreen(); break;
+    }
+    return AppContainer(
+      hidePadding: true,
+      child: IndexedStack(
+        index: _index,
+        children: pageList,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (int index) {
           setState(() {
             _index = index;
+
           });
         },
         items: <BottomNavigationBarItem>[
           _bottomBarItem(icon: Icons.movie, label: 'Movie'),
-          _bottomBarItem(icon: Icons.trending_down_outlined, label: 'Trend'),
           _bottomBarItem(icon: Icons.near_me, label: 'Near me'),
           _bottomBarItem(icon: Icons.favorite, label: 'Favorite'),
           _bottomBarItem(icon: Icons.perm_contact_cal_rounded, label: 'My'),
@@ -57,21 +63,11 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+
+
   BottomNavigationBarItem _bottomBarItem({IconData icon, String label}) {
     return BottomNavigationBarItem(icon: Icon(icon), label: label);
   }
+
 }
 
-class ContentInherit extends InheritedWidget {
-  const ContentInherit({this.index = 0, Widget child}) : super(child: child);
-  final int index;
-
-  @override
-  bool updateShouldNotify(covariant ContentInherit oldWidget) {
-    return oldWidget.index != index;
-  }
-
-  static ContentInherit of(BuildContext context) {
-     return context.dependOnInheritedWidgetOfExactType<ContentInherit>();
-  }
-}

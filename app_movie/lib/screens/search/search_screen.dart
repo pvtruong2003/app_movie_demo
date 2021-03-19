@@ -1,3 +1,4 @@
+import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/search_bloc.dart';
 import 'package:app_movie/display_connect_internet.dart';
 import 'package:app_movie/model/movie.dart';
@@ -32,9 +33,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('----------------> build');
-    return Scaffold(
-      body: SafeArea(
+    return AppContainer(
+      hidePadding: true,
+      child: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [

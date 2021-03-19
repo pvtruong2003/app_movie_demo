@@ -1,4 +1,5 @@
-import 'package:app_movie/bloc/movie_detail_bloc.dart';
+import 'package:app_movie/app_bar.dart';
+import 'package:app_movie/app_container.dart';
 import 'package:app_movie/model/reviews.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,62 +11,56 @@ class ReviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.white
-          ),
-          title: Text(review.author.toUpperCase(), style: const TextStyle(color: Colors.white),),
+    return AppContainer(
+        appBar: customAppBar(
+          title: review.author.toUpperCase()
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16,),
-                Center(
-                  child: InkWell(
-                    onTap: () {
-                      _finishAccountCreation(context);
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(120),
-                      child: _buildAvatar(),
-                    ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16,),
+              Center(
+                child: InkWell(
+                  onTap: () {
+                    _finishAccountCreation(context);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(120),
+                    child: _buildAvatar(),
                   ),
                 ),
-                const SizedBox(height: 8,),
-                Row(
-                  children: const <Widget>[
-                    Icon(
-                      Icons.star,
-                      color: Colors.yellow,
-                      size: 16,
-                    ),
-                    Icon(
-                      Icons.star,
-                      color: Colors.yellow,
-                      size: 16,
-                    ),
-                    Icon(
-                      Icons.star,
-                      color: Colors.yellow,
-                      size: 16,
-                    ),
-                    Icon(
-                      Icons.star,
-                      color: Colors.grey,
-                      size: 16,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8,),
-                Text('Date reviewed: ${review.createdAt}', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),),
-                const SizedBox(height: 8,),
-                Text(review.content)
-              ],
-            ),
+              ),
+              const SizedBox(height: 8,),
+              Row(
+                children: const <Widget>[
+                  Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                    size: 16,
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                    size: 16,
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                    size: 16,
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.grey,
+                    size: 16,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8,),
+              Text('Date reviewed: ${review.createdAt}', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),),
+              const SizedBox(height: 8,),
+              Text(review.content)
+            ],
           ),
         ));
   }

@@ -56,6 +56,7 @@ class MovieDetailBloc extends BaseBloc{
 
 
   Future<void> getDetails({String id}) async {
+    _movie?.sink?.add(null);
     _cart?.sink?.add(carts);
     await Future.wait([getMovieDetail(id: id), getReviews(id: id), getSimilarMovie(id: id)],);
   }

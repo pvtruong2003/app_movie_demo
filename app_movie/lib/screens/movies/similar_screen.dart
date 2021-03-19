@@ -1,3 +1,4 @@
+import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/movie_detail_bloc.dart';
 import 'package:app_movie/display_connect_internet.dart';
 import 'package:app_movie/model/movie.dart';
@@ -12,9 +13,10 @@ class SimilarMoviesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-       appBar: AppBar(),
-       body: StreamBuilder<List<Movie>>(
+    return AppContainer(
+      hidePadding: true,
+      appBar: AppBar(),
+       child: StreamBuilder<List<Movie>>(
          stream: movieDetailBloc.similarMovies,
          builder: (BuildContext ctx, AsyncSnapshot<List<Movie>> snapshot) {
            if (snapshot.hasData) {

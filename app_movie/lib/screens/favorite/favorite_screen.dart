@@ -5,9 +5,14 @@ class FavoriteScreen extends StatefulWidget {
   _FavoriteScreenState createState() => _FavoriteScreenState();
 }
 
-class _FavoriteScreenState extends State<FavoriteScreen> {
+class _FavoriteScreenState extends State<FavoriteScreen> with AutomaticKeepAliveClientMixin<FavoriteScreen>{
   @override
   Widget build(BuildContext context) {
-    return Container();
-  }
+    super.build(context);
+    return Scaffold(
+      body: Container(),
+    );  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
