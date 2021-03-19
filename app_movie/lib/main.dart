@@ -1,7 +1,7 @@
 import 'package:app_movie/app_config.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:app_movie/screens/movie_detail/movie_detail_screen.dart';
-import 'package:app_movie/splash.dart';
+import 'package:app_movie/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 //Use to get context from anywhere
