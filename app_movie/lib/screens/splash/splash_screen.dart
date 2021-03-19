@@ -26,7 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
         statusBarColor: Colors.black,
         statusBarIconBrightness: Brightness.dark
       ),
-      child: Scaffold(
+      child: SafeArea(
+        child: Scaffold(
         backgroundColor: Colors.black,
          body: Stack(
            children: <Widget>[
@@ -49,6 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
            ],
          ),
       ),
+    ),
     );
   }
 }
