@@ -2,6 +2,7 @@ import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/movie_detail_bloc.dart';
 import 'package:app_movie/display_connect_internet.dart';
 import 'package:app_movie/model/cart.dart';
+import 'package:app_movie/model/favorite.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/model/reviews.dart';
@@ -145,7 +146,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   SliverAppBar _buildAppBar(AsyncSnapshot<MovieDetail> snapshot) {
-    print('------------------------>');
     return SliverAppBar(
       backgroundColor: Colors.cyan,
       floating: true,
@@ -153,24 +153,38 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       snap: true,
       iconTheme: const IconThemeData(color: Colors.white),
       actions: <Widget>[
-        IconButton(
-            icon: ValueListenableBuilder<bool>(
-                valueListenable: isFavorite,
-                builder: (BuildContext ctx, bool isSelected, Widget child) {
-                  if (isSelected) {
-                    return const Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    );
-                  }
-                  return const Icon(
+        StreamBuilder<Favorite>(
+          stream: movieDetailBloc.favorite,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return IconButton(
+                  icon: const Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
+                  onPressed: () {
+                      if (snapshot.data.isFavorite) {
+                        movieDetailBloc.removeFavorite();
+                      } else {
+                        movieDetailBloc.addFavorite(
+                            isFavorite: snapshot.data.isFavorite,
+                            movieId: widget.id);
+                        movieDetailBloc.getFavorite();
+                      }
+                    });
+            } else {
+              return IconButton(
+                  icon: const Icon(
                     Icons.favorite_border,
                     color: Colors.red,
-                  );
-                }),
-            onPressed: () {
-              isFavorite.value = !isFavorite.value;
-            }),
+                  ),
+                  onPressed: () {
+                    movieDetailBloc.addFavorite(isFavorite: true, movieId: widget.id);
+                    movieDetailBloc.getFavorite();
+                  });
+            }
+          }
+        ),
         Stack(
           children: [
             IconButton(
@@ -187,15 +201,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               child: StreamBuilder<List<Cart>>(
                   stream: movieDetailBloc.cart,
                   builder: (BuildContext context, AsyncSnapshot<List<Cart>> snapshot) {
-
-                    return Container(
-                      padding: const EdgeInsets.all(4.0),
-                      decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle
-                      ),
-                      child: Text(snapshot.data.where((Cart element) => element.isSelected).toList().length.toString(), style: const TextStyle(color: Colors.white),),
-                    );
+                    if (snapshot.hasData) {
+                      int number  = snapshot.data.where((element) => element.isSelected).toList().length;
+                      return _buildCart(number: number);
+                    }
+                    return _buildCart();
                   }
               ),
             ),
@@ -209,6 +219,18 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           'http://image.tmdb.org/t/p/w500${snapshot.data.posterPath}',
           fit: BoxFit.fill,
         ),
+      ),
+    );
+  }
+
+  Container _buildCart({int number = 0}) {
+    return Container(
+      padding: const EdgeInsets.all(4.0),
+      decoration:
+          const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+      child: Text(
+        '$number',
+        style: const TextStyle(color: Colors.white),
       ),
     );
   }

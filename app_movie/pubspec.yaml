@@ -35,6 +35,13 @@ dependencies:
   logger: any
   intl: ^0.17.0
   get_it: ^6.0.0
+  firebase_core: ^0.4.5
+  firebase_database: ^3.1.6
+  firebase_auth: ^0.16.1
+  random_string: ^2.0.1
+  cloud_firestore: ^0.13.5
+  firebase_storage: ^3.1.6
+
 
 dev_dependencies:
   flutter_test:

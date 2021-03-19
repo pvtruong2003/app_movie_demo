@@ -1,15 +1,18 @@
 
 import 'package:app_movie/bloc/base_bloc.dart';
+import 'package:app_movie/bloc/favorite_bloc.dart';
 import 'package:app_movie/common/common.dart';
 import 'package:app_movie/locator.dart';
 import 'package:app_movie/main.dart';
 import 'package:app_movie/model/base_response/generic_collection.dart';
 import 'package:app_movie/model/cart.dart';
+import 'package:app_movie/model/favorite.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/model/movie_rating.dart';
 import 'package:app_movie/model/reviews.dart';
 import 'package:app_movie/service/provider_api.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -24,12 +27,14 @@ class MovieDetailBloc extends BaseBloc{
   final BehaviorSubject<MovieDetail> _movie = BehaviorSubject<MovieDetail>();
   final BehaviorSubject<MovieRating> _movieRating = BehaviorSubject<MovieRating>();
   final BehaviorSubject<List<Cart>> _cart = BehaviorSubject<List<Cart>>();
+  final BehaviorSubject<Favorite> _favorite =  BehaviorSubject<Favorite>();
 
   Stream<List<Movie>> get similarMovies => _similarMovie?.stream;
   Stream<List<Review>> get reviews => _review?.stream;
   Stream<MovieDetail> get movieDetail => _movie?.stream;
   Stream<MovieRating> get movieRating => _movieRating?.stream;
   Stream<List<Cart>> get cart => _cart?.stream;
+  Stream<Favorite> get favorite => _favorite?.stream;
 
   List<Cart> carts = [
     Cart(time: '08:00'),
@@ -58,6 +63,8 @@ class MovieDetailBloc extends BaseBloc{
   Future<void> getDetails({String id}) async {
     _movie?.sink?.add(null);
     _cart?.sink?.add(carts);
+    _favorite?.sink?.add(null);
+    getFavorite(movieId: id);
     await Future.wait([getMovieDetail(id: id), getReviews(id: id), getSimilarMovie(id: id)],);
   }
 
@@ -121,11 +128,66 @@ class MovieDetailBloc extends BaseBloc{
     return outputFormat.format(inputDate);
   }
 
+  Future<void> addFavorite({String movieId, bool isFavorite}) async {
+    Map<String, dynamic> data = {
+      'movieId': int.parse(movieId),
+      'isFavorite': isFavorite,
+      'title': _movie?.value?.title,
+      'overview': _movie?.value?.overview,
+      'url': _movie?.value?.posterPath
+    };
+    await Firestore.instance
+        .collection('movies')
+        .add(data)
+        .then((value) => print(value.documentID))
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  Future<void> removeFavorite() async {
+    Firestore.instance
+        .collection('movies')
+        .where('movieId', isEqualTo: _movie?.value?.id)
+        .getDocuments()
+        .then((value) {
+      value.documents.forEach((element) {
+        Firestore.instance
+            .collection('movies')
+            .document(element.documentID)
+            .delete()
+            .then((value) {
+          _favorite?.sink?.add(null);
+          //Update list favorites after delete at FavoriteScreen
+          favoriteBloc.getFavorite();
+        });
+      });
+    });
+  }
+
+  Future<void> getFavorite({String movieId}) async {
+    await Firestore.instance
+        .collection('movies')
+        .where('movieId', isEqualTo: int.parse(movieId))
+        .getDocuments()
+        .then((value) {
+      Favorite favorite = Favorite(
+        movieId: value.documents.first['movieId'],
+        isFavorite: value.documents.first['isFavorite'],
+      );
+      _favorite?.sink?.add(favorite);
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
   @override
   void onDispose() {
     _movie.close();
     _review?.close();
     _similarMovie?.close();
     _cart?.close();
+    _movieRating?.close();
+    _favorite?.close();
   }
 }

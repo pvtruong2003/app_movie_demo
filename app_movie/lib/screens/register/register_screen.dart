@@ -1,19 +1,19 @@
 import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/login_bloc.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
-import 'package:app_movie/screens/register/register_screen.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final LoginBloc _loginBloc = LoginBloc();
 
   @override
   Widget build(BuildContext context) {
+    _loginBloc.navigator = navigator;
     return AppContainer(
       hidePadding: true,
       child: SingleChildScrollView(
@@ -25,15 +25,15 @@ class _LoginScreenState extends State<LoginScreen> {
               Image.asset('assets/images/logo.png'),
               const SizedBox(height: 32.0,),
               StreamBuilder<String>(
-                stream: _loginBloc.email,
-                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  return TextField(
-                    onChanged: (String email) => _loginBloc.updateEmail(email),
-                    decoration: InputDecoration(
-                       errorText: snapshot.hasError ? snapshot.error.toString() : null,
-                        hintText: 'Email', filled: true, fillColor: Colors.white),
-                  );
-                }
+                  stream: _loginBloc.email,
+                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    return TextField(
+                      onChanged: (String email) => _loginBloc.updateEmail(email),
+                      decoration: InputDecoration(
+                          errorText: snapshot.hasError ? snapshot.error.toString() : null,
+                          hintText: 'Email', filled: true, fillColor: Colors.white),
+                    );
+                  }
               ),
               const SizedBox(height: 12.0,),
 
@@ -50,28 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 32.0,),
 
-              MaterialButton(onPressed: () {
-                     Navigator.pushReplacement(context, MaterialPageRoute<void>(builder: (BuildContext ctx) => MainScreen()));
-               },
+              MaterialButton(onPressed: () => register(),
                 minWidth: double.infinity,
-               color: Colors.cyan,
-               child: const Text('Login', style: TextStyle(color: Colors.white),),),
+                color: Colors.cyan,
+                child: const Text('Register', style: TextStyle(color: Colors.white),),)
 
-              const SizedBox(height: 16.0,),
-
-
-              MaterialButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                          builder: (BuildContext ctx) => RegisterScreen()));
-                },
-                child: const Text(
-                  'Register',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
             ],
           ),
         ),
@@ -79,9 +62,26 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<void> register() async{
+    await _loginBloc.signUpEmailPassword();
+  }
+
   @override
   void dispose() {
     _loginBloc?.onDispose();
     super.dispose();
+  }
+
+  void  navigator(String value) {
+    if (value != null) {
+        showDialog<void>(context: context, builder: (BuildContext ctx){
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(value),
+          );
+        },useSafeArea: true);
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => MainScreen()));
+    }
   }
 }
