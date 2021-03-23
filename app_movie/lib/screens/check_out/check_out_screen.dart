@@ -43,6 +43,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         genres.write(', ');
       }
     });
+    print(genres.toString());
     return AppContainer(
         appBar:
             customAppBar(leading: true, title: 'Check out', centerTitle: true),
