@@ -1,6 +1,6 @@
 import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/movie_detail_bloc.dart';
-import 'package:app_movie/display_connect_internet.dart';
+import 'package:app_movie/call_retry.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/screens/movie/widgets/item_movie.dart';
 import 'package:app_movie/wigets/list_item_builder.dart';
@@ -21,7 +21,7 @@ class SimilarMoviesScreen extends StatelessWidget {
          builder: (BuildContext ctx, AsyncSnapshot<List<Movie>> snapshot) {
            if (snapshot.hasData) {
              if (snapshot.data[0].error != null) {
-               return DisplayConnectInternet(
+               return CallRetry(
                  message: snapshot.data[0].error,
                  showAppBar: false,
                  voidCallback: () async{

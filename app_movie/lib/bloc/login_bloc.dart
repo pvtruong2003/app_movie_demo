@@ -1,9 +1,11 @@
 import 'package:app_movie/bloc/base_bloc.dart';
+import 'package:app_movie/constants.dart';
 import 'package:app_movie/main.dart';
+import 'package:app_movie/service/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 
-typedef NavigatorMainScreen = void Function(String value);
+typedef NavigatorScreen = void Function(dynamic value);
 
 class LoginBloc extends BaseBloc {
   LoginBloc() {
@@ -24,7 +26,12 @@ class LoginBloc extends BaseBloc {
 
   Stream<bool> get isLogin => _isLogin?.stream;
 
-  NavigatorMainScreen navigator;
+  NavigatorScreen navigator;
+
+  Future<void> getLogin() async {
+    bool result =  await StoreData.read(KeyStore.LOGIN);
+    navigator(result ?? false);
+  }
 
   void updateEmail(String email) {
     if (email == null || email == '') {
@@ -48,7 +55,19 @@ class LoginBloc extends BaseBloc {
         .createUserWithEmailAndPassword(
             email: _email?.value, password: _password?.value)
         .then((value) {
+      StoreData.store(KeyStore.LOGIN, true);
       navigator(null);
+    }).catchError((e) => navigator(e.toString()));
+  }
+
+  signInEmailPassword() async {
+    AuthResult result;
+    result = await mAuth
+        .signInWithEmailAndPassword(
+            email: _email?.value, password: _password?.value)
+        .then((value) {
+      navigator(null);
+      StoreData.store(KeyStore.LOGIN, true);
     }).catchError((e) => navigator(e.toString()));
   }
 

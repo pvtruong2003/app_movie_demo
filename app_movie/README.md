@@ -21,3 +21,6 @@ https://api.themoviedb.org/3/movie/527774/videos?api_key=095a1beb261c7c8385ebb67
 
 
 https://api.themoviedb.org/3/movie/upcoming?api_key=095a1beb261c7c8385ebb67348b42df7&language=en-US&page=1
+
+Get SHA1: android -> gradlew -> Open in terminal ->  gradlew signingReport
+

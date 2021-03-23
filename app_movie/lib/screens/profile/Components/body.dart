@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:app_movie/constants.dart';
+import 'package:app_movie/service/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:app_movie/screens/profile/Components/profile_pic.dart';
+import 'package:flutter/services.dart';
 
 class Body extends StatelessWidget {
   @override
@@ -25,7 +30,12 @@ class Body extends StatelessWidget {
         },
         ),
         ProfileMenu(icon: Icons.logout, text: "Log Out",press: () {
-
+          StoreData.store(KeyStore.LOGIN, false);
+          if (Platform.isAndroid) {
+            SystemNavigator.pop();
+          } else if (Platform.isIOS) {
+            exit(0);
+          }
         },
         ),
       ],
@@ -53,7 +63,9 @@ final VoidCallback press;
         padding: EdgeInsets.all(20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         color: Color(0xFFF5F6F9),
-        onPressed: () {},
+        onPressed: () {
+          press();
+        },
         child: Row(
           children: [
             Icon(icon), 

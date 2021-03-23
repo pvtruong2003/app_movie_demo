@@ -1,4 +1,6 @@
+import 'package:app_movie/bloc/login_bloc.dart';
 import 'package:app_movie/screens/login/login_screen.dart';
+import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,19 +10,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  LoginBloc _loginBloc;
   @override
   void initState() {
     super.initState();
-    gotoMain();
+    _loginBloc = LoginBloc();
+    Future.delayed(Duration(milliseconds: 2000)).then((value) => _loginBloc.getLogin());
   }
 
-  Future<void> gotoMain() async{
-    Future<void>.delayed(const Duration(milliseconds: 3000)).then<void>((void value) => Navigator.pushReplacement(context,  MaterialPageRoute<void>(builder: (BuildContext ctx){
-      return LoginScreen();
-    })));
-  }
   @override
   Widget build(BuildContext context) {
+    _loginBloc.navigator = navigator;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.black,
@@ -52,5 +52,15 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     ),
     );
+  }
+
+  void navigator(dynamic isLogin) {
+    if (isLogin) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => MainScreen()));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (ctx) => LoginScreen()));
+    }
   }
 }

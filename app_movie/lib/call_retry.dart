@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class DisplayConnectInternet extends StatelessWidget {
-  const DisplayConnectInternet({Key key, this.message, this.voidCallback, this.showAppBar = true})
+class CallRetry extends StatelessWidget {
+  const CallRetry({Key key, this.message, this.voidCallback, this.showAppBar = true})
       : super(key: key);
 
   final String message;

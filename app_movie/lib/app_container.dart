@@ -49,8 +49,8 @@ class _AppContainerState extends State<AppContainer> {
       state: this,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: Colors.cyan,
-          statusBarIconBrightness: Brightness.light
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark
         ),
         child: Scaffold(
           key: scaffoldKey,

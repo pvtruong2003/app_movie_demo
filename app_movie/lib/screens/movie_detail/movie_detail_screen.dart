@@ -1,11 +1,12 @@
 import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/movie_detail_bloc.dart';
-import 'package:app_movie/display_connect_internet.dart';
+import 'package:app_movie/call_retry.dart';
 import 'package:app_movie/model/cart.dart';
 import 'package:app_movie/model/favorite.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/model/reviews.dart';
+import 'package:app_movie/screens/booking/booking_screen.dart';
 import 'package:app_movie/screens/movie_detail/widgets/item_all.dart';
 import 'package:app_movie/screens/movie_detail/widgets/item_reviews.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             if (snapshot.hasData) {
               final MovieDetail movieDetail = snapshot.data;
               if (movieDetail.error != null) {
-                return DisplayConnectInternet(
+                return CallRetry(
                   message: movieDetail.error,
                   voidCallback: () {
                     movieDetailBloc.getDetails(id: widget.id);
@@ -156,6 +157,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         StreamBuilder<Favorite>(
           stream: movieDetailBloc.favorite,
           builder: (context, snapshot) {
+
             if (snapshot.hasData) {
               return IconButton(
                   icon: const Icon(
@@ -163,14 +165,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                     color: Colors.red,
                   ),
                   onPressed: () {
-                      if (snapshot.data.isFavorite) {
-                        movieDetailBloc.removeFavorite();
-                      } else {
-                        movieDetailBloc.addFavorite(
-                            isFavorite: snapshot.data.isFavorite,
-                            movieId: widget.id);
-                        movieDetailBloc.getFavorite();
-                      }
+                      movieDetailBloc.removeFavorite();
                     });
             } else {
               return IconButton(
@@ -185,33 +180,42 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             }
           }
         ),
-        Stack(
-          children: [
-            IconButton(
-                icon: const Icon(
-                  Icons.shopping_cart,
-                  color: Colors.red,
-                ),
+        // Stack(
+        //   children: [
+        //     IconButton(
+        //         icon: const Icon(
+        //           Icons.shopping_cart,
+        //           color: Colors.red,
+        //         ),
+        //         onPressed: () {
+        //           _showModalBottomTime();
+        //         }),
+        //     Positioned(
+        //       top: 4,
+        //       right: 6,
+        //       child: StreamBuilder<List<Cart>>(
+        //           stream: movieDetailBloc.cart,
+        //           builder: (BuildContext context, AsyncSnapshot<List<Cart>> snapshot) {
+        //             if (snapshot.hasData) {
+        //               int number  = snapshot.data.where((element) => element.isSelected).toList().length;
+        //               return _buildCart(number: number);
+        //             }
+        //             return _buildCart();
+        //           }
+        //       ),
+        //     ),
+        //
+        //   ],
+        // ),
+        IconButton(
+                icon: const Icon(Icons.date_range, color: Colors.red,),
                 onPressed: () {
-                  _showModalBottomTime();
-                }),
-            Positioned(
-              top: 4,
-              right: 6,
-              child: StreamBuilder<List<Cart>>(
-                  stream: movieDetailBloc.cart,
-                  builder: (BuildContext context, AsyncSnapshot<List<Cart>> snapshot) {
-                    if (snapshot.hasData) {
-                      int number  = snapshot.data.where((element) => element.isSelected).toList().length;
-                      return _buildCart(number: number);
-                    }
-                    return _buildCart();
-                  }
-              ),
-            ),
+                // dynamic date = getDate();
+                // print('Date =============> $date');
+                Navigator.push(context, MaterialPageRoute(builder: (ctx) => BookingScreen(movie: movieDetailBloc.getMovie(),))) ;
 
-          ],
-        ),
+
+                },)
       ],
       expandedHeight: 280,
       flexibleSpace: FlexibleSpaceBar(
@@ -221,6 +225,19 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         ),
       ),
     );
+  }
+
+  Future<DateTimeRange> getDate() async {
+
+    return showDateRangePicker(
+        context: context,
+        currentDate: DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2022),
+        initialDateRange: DateTimeRange(start: DateTime.now(), end: DateTime(2021, 9, 7, 17, 30)),
+        builder: (ctx, child) {
+          return Theme(data: ThemeData.light(), child: child);
+        });
   }
 
   Container _buildCart({int number = 0}) {

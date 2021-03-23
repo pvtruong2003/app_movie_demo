@@ -1,8 +1,12 @@
 import 'package:app_movie/app_config.dart';
+import 'package:app_movie/common/style/color.dart';
+import 'package:app_movie/common/style/fonts.dart';
+import 'package:app_movie/screens/login/login_screen.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:app_movie/screens/movie_detail/movie_detail_screen.dart';
 import 'package:app_movie/screens/splash/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 //Use to get context from anywhere
@@ -65,20 +69,26 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+          fontFamily: AppFontFamily.prDisplay,
           primarySwatch: Colors.cyan,
           inputDecorationTheme: InputDecorationTheme(
-            enabledBorder: UnderlineInputBorder(
+            hintStyle: TextStyle(color: AppColor.grayA6, fontSize: AppFontSize.text),
+            contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey[400])),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey[400])),
-            border: UnderlineInputBorder(
+            border: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey[400])),
-            errorBorder: UnderlineInputBorder(
+            errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey[400])),
+            focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey[400]))
           )),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => SplashScreen(),
+        LoginScreen.routerName: (BuildContext ctx) => LoginScreen(),
         MainScreen.routerName: (BuildContext ctx) => MainScreen(),
         MovieDetailScreen.routerName: (BuildContext ctx) =>
             const MovieDetailScreen(),

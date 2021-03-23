@@ -1,6 +1,6 @@
 import 'package:app_movie/bloc/movie_bloc.dart';
 import 'package:app_movie/bloc/movie_detail_bloc.dart';
-import 'package:app_movie/display_connect_internet.dart';
+import 'package:app_movie/call_retry.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/model/reviews.dart';
 import 'package:app_movie/screens/movie/widgets/item_richtext.dart';
@@ -41,7 +41,7 @@ class _MovieDetail2ScreenState extends State<MovieDetail2Screen>
             if (snapshot.hasData) {
               final MovieDetail movieDetail = snapshot.data;
               if (movieDetail.error != null) {
-                return DisplayConnectInternet(
+                return CallRetry(
                   message: movieDetail.error,
                   voidCallback: () {
                     _movieBloc.getDetails(id: widget.id);

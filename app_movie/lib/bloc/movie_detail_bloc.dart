@@ -1,4 +1,3 @@
-
 import 'package:app_movie/bloc/base_bloc.dart';
 import 'package:app_movie/bloc/favorite_bloc.dart';
 import 'package:app_movie/common/common.dart';
@@ -18,16 +17,18 @@ import 'package:rxdart/rxdart.dart';
 
 MovieDetailBloc movieDetailBloc = MovieDetailBloc();
 
-class MovieDetailBloc extends BaseBloc{
-
+class MovieDetailBloc extends BaseBloc {
   final ProviderAPI _providerAP = locator<ProviderAPI>();
+  String _movieId;
 
-  final BehaviorSubject<List<Movie>> _similarMovie = BehaviorSubject<List<Movie>>();
+  final BehaviorSubject<List<Movie>> _similarMovie =
+      BehaviorSubject<List<Movie>>();
   final BehaviorSubject<List<Review>> _review = BehaviorSubject<List<Review>>();
   final BehaviorSubject<MovieDetail> _movie = BehaviorSubject<MovieDetail>();
-  final BehaviorSubject<MovieRating> _movieRating = BehaviorSubject<MovieRating>();
+  final BehaviorSubject<MovieRating> _movieRating =
+      BehaviorSubject<MovieRating>();
   final BehaviorSubject<List<Cart>> _cart = BehaviorSubject<List<Cart>>();
-  final BehaviorSubject<Favorite> _favorite =  BehaviorSubject<Favorite>();
+  final BehaviorSubject<Favorite> _favorite = BehaviorSubject<Favorite>();
 
   Stream<List<Movie>> get similarMovies => _similarMovie?.stream;
   Stream<List<Review>> get reviews => _review?.stream;
@@ -59,24 +60,28 @@ class MovieDetailBloc extends BaseBloc{
     Cart(time: '23:30'),
   ];
 
-
   Future<void> getDetails({String id}) async {
     _movie?.sink?.add(null);
     _cart?.sink?.add(carts);
     _favorite?.sink?.add(null);
-    getFavorite(movieId: id);
-    await Future.wait([getMovieDetail(id: id), getReviews(id: id), getSimilarMovie(id: id)],);
+    await Future.wait(
+      [getMovieDetail(id: id), getReviews(id: id), getSimilarMovie(id: id)],
+    );
   }
 
   Future<void> getDetail({String id}) async {
     Common.showLoading(navigatorKey.currentContext);
-    await Future.wait([getMovieDetail(id: id), getReviews(id: id), getSimilarMovie(id: id)],);
+    await Future.wait(
+      [getMovieDetail(id: id), getReviews(id: id), getSimilarMovie(id: id)],
+    );
     Common.hideLoading(navigatorKey.currentContext);
   }
 
   Future<void> getMovieDetail({String id}) async {
     try {
       final MovieDetail data = await _providerAP.getDetailMovie(id);
+      _movieId = id;
+      getFavorite(movieId: id);
       _movie?.sink?.add(data);
     } on Exception catch (e, st) {
       _movie?.sink?.add(MovieDetail.withError(_providerAP.handleError(e)));
@@ -85,15 +90,14 @@ class MovieDetailBloc extends BaseBloc{
 
   Future<void> getReviews({String id}) async {
     try {
-      final GenericCollection<Review> data =
-      await _providerAP.getReviews(id);
+      final GenericCollection<Review> data = await _providerAP.getReviews(id);
       final List<Review> reviews = data.results
           .map((Review review) => Review(
-          review.id,
-          review.author,
-          review.content,
-          _parseDate(review.createdAt),
-          review.authorDetails))
+              review.id,
+              review.author,
+              review.content,
+              _parseDate(review.createdAt),
+              review.authorDetails))
           .toList();
       _review?.sink?.add(reviews);
     } on Exception catch (e, st) {
@@ -102,27 +106,28 @@ class MovieDetailBloc extends BaseBloc{
   }
 
   void updateCart(int index, bool isSelected) {
-      carts[index].isSelected = isSelected;
-      _cart?.sink?.add(carts);
+    carts[index].isSelected = isSelected;
+    _cart?.sink?.add(carts);
   }
 
   List<Cart> getListCart() {
     return _cart.value.where((Cart element) => element.isSelected).toList();
   }
 
-  Future<void> getSimilarMovie({String id}) async{
+  Future<void> getSimilarMovie({String id}) async {
     try {
-      final GenericCollection<Movie> data = await _providerAP.getSimilarMovies(id);
+      final GenericCollection<Movie> data =
+          await _providerAP.getSimilarMovies(id);
       _similarMovie?.sink?.add(data.results);
     } on Exception catch (e, st) {
       print('Get error --------------> ${_providerAP.handleError(e)}');
-      _similarMovie?.sink?.add(<Movie>[Movie.withError(_providerAP.handleError(e))]);
+      _similarMovie?.sink
+          ?.add(<Movie>[Movie.withError(_providerAP.handleError(e))]);
     }
   }
 
   String _parseDate(String createdAt) {
-    final DateTime parseDate =
-    DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(createdAt);
+    final DateTime parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(createdAt);
     final DateTime inputDate = DateTime.parse(parseDate.toString());
     final DateFormat outputFormat = DateFormat('MMM dd, yyyy');
     return outputFormat.format(inputDate);
@@ -130,7 +135,7 @@ class MovieDetailBloc extends BaseBloc{
 
   Future<void> addFavorite({String movieId, bool isFavorite}) async {
     Map<String, dynamic> data = {
-      'movieId': int.parse(movieId),
+      'movieId': int.parse(_movieId),
       'isFavorite': isFavorite,
       'title': _movie?.value?.title,
       'overview': _movie?.value?.overview,
@@ -139,7 +144,7 @@ class MovieDetailBloc extends BaseBloc{
     await Firestore.instance
         .collection('movies')
         .add(data)
-        .then((value) => print(value.documentID))
+        .then((value) => favoriteBloc.getFavorite())
         .catchError((e) {
       print(e.toString());
     });
@@ -148,7 +153,7 @@ class MovieDetailBloc extends BaseBloc{
   Future<void> removeFavorite() async {
     Firestore.instance
         .collection('movies')
-        .where('movieId', isEqualTo: _movie?.value?.id)
+        .where('movieId', isEqualTo: int.parse(_movieId))
         .getDocuments()
         .then((value) {
       value.documents.forEach((element) {
@@ -162,13 +167,17 @@ class MovieDetailBloc extends BaseBloc{
           favoriteBloc.getFavorite();
         });
       });
+    }).catchError((e) {
+      print(e.toString());
     });
   }
 
   Future<void> getFavorite({String movieId}) async {
+    //Remove data after change movie
+    _favorite?.sink?.add(null);
     await Firestore.instance
         .collection('movies')
-        .where('movieId', isEqualTo: int.parse(movieId))
+        .where('movieId', isEqualTo: int.parse(_movieId))
         .getDocuments()
         .then((value) {
       Favorite favorite = Favorite(
@@ -179,6 +188,10 @@ class MovieDetailBloc extends BaseBloc{
     }).catchError((e) {
       print(e.toString());
     });
+  }
+
+  MovieDetail getMovie() {
+    return _movie?.value ?? null;
   }
 
   @override
