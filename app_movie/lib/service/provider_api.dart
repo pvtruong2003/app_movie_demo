@@ -13,8 +13,7 @@ class ProviderAPI extends BaseApiProvider {
     _result = await dio.request<Map<String, dynamic>>(
         'popular?$API_KEY&page=$page',
         options: RequestOptions(method: 'GET', baseUrl: baseUrl));
-    final GenericCollection<Movie> value =
-        GenericCollection<Movie>.fromJson(_result.data);
+    final dynamic value = GenericCollection<Movie>.fromJson(_result.data);
     return value;
   }
 
@@ -23,8 +22,7 @@ class ProviderAPI extends BaseApiProvider {
       '$id/reviews?$API_KEY',
       options: RequestOptions(method: 'GET', baseUrl: baseUrl),
     );
-    final GenericCollection<Review> value =
-        GenericCollection<Review>.fromJson(_result.data);
+    final dynamic value = GenericCollection<Review>.fromJson(_result.data);
     return value;
   }
 

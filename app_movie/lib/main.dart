@@ -71,6 +71,12 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
           fontFamily: AppFontFamily.prDisplay,
           primarySwatch: Colors.cyan,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          canvasColor: Colors.transparent,
+          dialogBackgroundColor: Colors.white,
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Colors.white
+          ) ,
           inputDecorationTheme: InputDecorationTheme(
             hintStyle: TextStyle(color: AppColor.grayA6, fontSize: AppFontSize.text),
             contentPadding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
