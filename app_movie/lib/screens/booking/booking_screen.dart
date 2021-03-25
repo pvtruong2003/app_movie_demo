@@ -8,6 +8,7 @@ import 'package:app_movie/screens/booking/widgets/item_date.dart';
 import 'package:app_movie/screens/booking/widgets/item_time.dart';
 import 'package:app_movie/screens/check_out/check_out_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -20,10 +21,23 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  List<String> times = ['09:00', '10:00', '11:00','12:00', '13:00', '14:00','15:00', '16:00', '17:00',];
+  final Geolocator _geoLocator = Geolocator();
+  ValueNotifier<double> _distance = ValueNotifier(0.0);
+  Position _position;
+  List<String> times = [
+    '09:00',
+    '10:00',
+    '11:00',
+    '12:00',
+    '13:00',
+    '14:00',
+    '15:00',
+    '16:00',
+    '17:00',
+  ];
   @override
   void initState() {
-    // TODO: implement initState
+    _getCurrentLocation();
     super.initState();
   }
 
@@ -35,6 +49,17 @@ class _BookingScreenState extends State<BookingScreen> {
     return days;
   }
 
+  _getCurrentLocation() async {
+    await _geoLocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) {
+      setState(() {
+        _position = position;
+      });
+    });
+    double distance = await _geoLocator.distanceBetween(_position.latitude,
+        _position.longitude, 10.783861117913025, 106.70188145391356);
+    _distance.value = distance;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<DateTime> dateTimes = calculateDaysInterval(DateTime.now(), DateTime(2021, 4, 30, 0,0));
@@ -44,22 +69,23 @@ class _BookingScreenState extends State<BookingScreen> {
             title: 'Booking', centerTitle: true),
         child: ListView(
           children: [
-           // Text('Lotte Cinema'),
             Text(widget.movie.title, style: TextStyle(fontSize: AppFontSize.large, fontWeight: AppFontWeight.semiBold),),
             _buildRowTime(),
             Container(
              height: 300,
-              // child: Wrap(
-              //   spacing: 4,
-              //   runSpacing: 4,
-              //   children: List.generate(50, (index) => Container(
-              //     padding: EdgeInsets.all(8),
-              //       decoration: BoxDecoration(
-              //         color: Colors.grey,
-              //         borderRadius: BorderRadius.circular(8)
-              //       ),
-              //       child: Text('S$index'))),
-              // ),
+              child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 8,
+                mainAxisSpacing: 4,
+                crossAxisSpacing: 4
+              ), itemBuilder: (ctx, index) {
+                 return Container(
+                     alignment: Alignment.center,
+                     decoration: BoxDecoration(
+                         color: Colors.grey[100],
+                         borderRadius: BorderRadius.circular(8)
+                     ),
+                     child: Text('S${index+1}', style: TextStyle(color: AppColor.black.withOpacity(0.5), fontSize: 10,),));
+              }, itemCount: 100,),
            ),
           _buildListDate(dateTimes),
           _buildListTime()
@@ -222,25 +248,37 @@ class _BookingScreenState extends State<BookingScreen> {
 
   Row _buildRowTime() {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-             children: [
-              TextButton.icon(
-                  style:  TextButton.styleFrom(
-                    primary: AppColor.white,
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0)
-                  ),
-                  onPressed: () {},
-                  icon: Icon(Icons.location_on_rounded, color: AppColor.black,),
-                  label: Text('Lotte Cinema', style: TextStyle(color: Colors.cyan),)),
-              TextButton.icon(
-                  style:  TextButton.styleFrom(
-                      primary: AppColor.white,
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0)
-                  ),
-                  onPressed: () {},
-                  icon: Icon(Icons.timer, color: AppColor.black,),
-                  label: Text('2h 45min', style: TextStyle(color: Colors.cyan),))
-            ],
-          );
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        TextButton.icon(
+            style: TextButton.styleFrom(
+                primary: AppColor.white,
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0)),
+            onPressed: () {},
+            icon: Icon(
+              Icons.location_on_rounded,
+              color: AppColor.black,
+            ),
+            label: ValueListenableBuilder<double>(
+              valueListenable: _distance,
+              builder: (ctx, value, child) {
+                return Text('Lotte Cinema ${(value/1000).toStringAsFixed(2)} km',style: TextStyle(color: Colors.cyan));
+              },
+            )),
+        TextButton.icon(
+            style: TextButton.styleFrom(
+                primary: AppColor.white,
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 0)),
+            onPressed: () {},
+            icon: Icon(
+              Icons.timer,
+              color: AppColor.black,
+            ),
+            label: Text(
+              '2h 45min',
+              style: TextStyle(color: Colors.cyan),
+            ))
+      ],
+    );
   }
 }

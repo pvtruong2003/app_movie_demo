@@ -14,6 +14,7 @@ class AppContainer extends StatefulWidget {
         this.containerBackgroundColor = Colors.white,
         this.contentBackgroundColor = Colors.white,
         this.isResizeToAvoidBottomInset = true,
+        this.isStatusBar = true,
         this.bottomSheet,
         this.drawer,
         this.paddingTop = 20.0,
@@ -27,6 +28,7 @@ class AppContainer extends StatefulWidget {
   final Widget child;
   final bool hidePadding;
   final bool enableSafeAreaOnTop;
+  final bool isStatusBar;
   final bool enableSafeAreaOnBottom;
   final Color containerBackgroundColor;
   final Color contentBackgroundColor;
@@ -44,44 +46,72 @@ class _AppContainerState extends State<AppContainer> {
 
   @override
   Widget build(BuildContext context) {
-
     return _InheritedAppContainer(
       state: this,
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-          statusBarIconBrightness: Brightness.dark
-        ),
-        child: Scaffold(
-          key: scaffoldKey,
-          backgroundColor: widget.containerBackgroundColor,
-          appBar: widget.appBar,
-          resizeToAvoidBottomInset: widget.isResizeToAvoidBottomInset,
-          body: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: SafeArea(
-              top: widget.enableSafeAreaOnTop,
-              bottom: widget.enableSafeAreaOnBottom,
-              child: Container(
-                color: widget.contentBackgroundColor,
-                padding: widget.hidePadding
-                    ? EdgeInsets.zero
-                    : EdgeInsets.only(
-                        top: widget.paddingTop,
-                        left: widget.paddingLeft,
-                        right: widget.paddingRight,
-                        bottom: widget.paddingBottom),
-                child: widget.child,
+      child: widget.isStatusBar
+          ? AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle(
+                  statusBarColor: Colors.white,
+                  statusBarIconBrightness: Brightness.dark),
+              child: Scaffold(
+                key: scaffoldKey,
+                backgroundColor: widget.containerBackgroundColor,
+                appBar: widget.appBar,
+                resizeToAvoidBottomInset: widget.isResizeToAvoidBottomInset,
+                body: GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  child: SafeArea(
+                    top: widget.enableSafeAreaOnTop,
+                    bottom: widget.enableSafeAreaOnBottom,
+                    child: Container(
+                      color: widget.contentBackgroundColor,
+                      padding: widget.hidePadding
+                          ? EdgeInsets.zero
+                          : EdgeInsets.only(
+                              top: widget.paddingTop,
+                              left: widget.paddingLeft,
+                              right: widget.paddingRight,
+                              bottom: widget.paddingBottom),
+                      child: widget.child,
+                    ),
+                  ),
+                ),
+                bottomNavigationBar: widget.bottomNavigationBar,
+                bottomSheet: widget.bottomSheet,
+                drawer: widget.drawer,
               ),
+            )
+          : Scaffold(
+              key: scaffoldKey,
+              backgroundColor: widget.containerBackgroundColor,
+              appBar: widget.appBar,
+              resizeToAvoidBottomInset: widget.isResizeToAvoidBottomInset,
+              body: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: SafeArea(
+                  top: widget.enableSafeAreaOnTop,
+                  bottom: widget.enableSafeAreaOnBottom,
+                  child: Container(
+                    color: widget.contentBackgroundColor,
+                    padding: widget.hidePadding
+                        ? EdgeInsets.zero
+                        : EdgeInsets.only(
+                            top: widget.paddingTop,
+                            left: widget.paddingLeft,
+                            right: widget.paddingRight,
+                            bottom: widget.paddingBottom),
+                    child: widget.child,
+                  ),
+                ),
+              ),
+              bottomNavigationBar: widget.bottomNavigationBar,
+              bottomSheet: widget.bottomSheet,
+              drawer: widget.drawer,
             ),
-          ),
-          bottomNavigationBar: widget.bottomNavigationBar,
-          bottomSheet: widget.bottomSheet,
-          drawer: widget.drawer,
-        ),
-      ),
     );
   }
 }

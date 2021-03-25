@@ -30,7 +30,7 @@ class Body extends StatelessWidget {
         },
         ),
         ProfileMenu(icon: Icons.logout, text: "Log Out",press: () {
-          StoreData.store(KeyStore.LOGIN, false);
+          StoreData.store(KeyStore.login, false);
           if (Platform.isAndroid) {
             SystemNavigator.pop();
           } else if (Platform.isIOS) {

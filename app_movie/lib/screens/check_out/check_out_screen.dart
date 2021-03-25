@@ -6,6 +6,7 @@ import 'package:app_movie/common/widgets/item_booking.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/model/payment.dart';
 import 'package:app_movie/screens/check_out/widgets/item_payment.dart';
+import 'package:app_movie/screens/completed/completed_screen.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -169,7 +170,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(context, MainScreen.routerName, (route) => false);
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => CompletedScreen(movie: movieDetail.title,)), (route) => false);
           },
           child: Text(
             'Pay - 55',

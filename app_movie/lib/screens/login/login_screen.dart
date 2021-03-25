@@ -148,8 +148,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void dispose() {
     _loginBloc?.onDispose();
+    print('-------------------> 1245');
     super.dispose();
   }
+
 
   void navigator(dynamic value) {
     Common.hideLoading(context);

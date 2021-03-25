@@ -14,6 +14,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+https://www.uplabs.com/posts/movie-booking-app-template
 
 https://api.themoviedb.org/3/movie/popular?api_key=095a1beb261c7c8385ebb67348b42df7
 
@@ -35,4 +36,10 @@ https://www.tutorialkart.com/dart/dart-list/
 https://dribbble.com/shots/14881170-Cinema-Ticket-App
 https://dribbble.com/shots/6479699-Cinema-Ticket-App
 https://dribbble.com/shots/8908910-Cinema-Tickets-Booking-App/attachments/1075629?mode=media
+https://dribbble.com/shots/3461602-Cinema-App-Interactions/attachments/3461602-Cinema-App-Interactions?mode=media
+https://design4users.com/ui-for-movies-collection-of-cinema-app-designs/
+
+https://blog.codemagic.io/creating-a-route-calculator-using-google-maps/
+https://www.raywenderlich.com/4466319-google-maps-for-flutter-tutorial-getting-started
+
 

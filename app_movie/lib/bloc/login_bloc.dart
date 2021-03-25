@@ -29,7 +29,7 @@ class LoginBloc extends BaseBloc {
   NavigatorScreen navigator;
 
   Future<void> getLogin() async {
-    bool result =  await StoreData.read(KeyStore.LOGIN);
+    bool result =  await StoreData.read(KeyStore.login);
     navigator(result ?? false);
   }
 
@@ -55,7 +55,7 @@ class LoginBloc extends BaseBloc {
         .createUserWithEmailAndPassword(
             email: _email?.value, password: _password?.value)
         .then((value) {
-      StoreData.store(KeyStore.LOGIN, true);
+      StoreData.store(KeyStore.login, true);
       navigator(null);
     }).catchError((e) => navigator(e.toString()));
   }
@@ -67,7 +67,7 @@ class LoginBloc extends BaseBloc {
             email: _email?.value, password: _password?.value)
         .then((value) {
       navigator(null);
-      StoreData.store(KeyStore.LOGIN, true);
+      StoreData.store(KeyStore.login, true);
     }).catchError((e) => navigator(e.toString()));
   }
 

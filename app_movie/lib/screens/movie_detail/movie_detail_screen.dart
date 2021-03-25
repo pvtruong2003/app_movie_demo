@@ -1,6 +1,8 @@
 import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/movie_detail_bloc.dart';
 import 'package:app_movie/call_retry.dart';
+import 'package:app_movie/common/style/color.dart';
+import 'package:app_movie/common/style/fonts.dart';
 import 'package:app_movie/model/cart.dart';
 import 'package:app_movie/model/favorite.dart';
 import 'package:app_movie/model/movie.dart';
@@ -10,6 +12,7 @@ import 'package:app_movie/screens/booking/booking_screen.dart';
 import 'package:app_movie/screens/movie_detail/widgets/item_all.dart';
 import 'package:app_movie/screens/movie_detail/widgets/item_reviews.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   const MovieDetailScreen({Key key, this.id}) : super(key: key);
@@ -23,45 +26,76 @@ class MovieDetailScreen extends StatefulWidget {
 
 class _MovieDetailScreenState extends State<MovieDetailScreen> {
   ValueNotifier<bool> isFavorite = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     movieDetailBloc.getDetails(id: widget.id);
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return AppContainer(
+      isStatusBar: false,
       hidePadding: true,
-      child: StreamBuilder<MovieDetail>(
-          stream: movieDetailBloc.movieDetail,
-          builder: (BuildContext context, AsyncSnapshot<MovieDetail> snapshot) {
-            if (snapshot.hasData) {
-              final MovieDetail movieDetail = snapshot.data;
-              if (movieDetail.error != null) {
-                return CallRetry(
-                  message: movieDetail.error,
-                  voidCallback: () {
-                    movieDetailBloc.getDetails(id: widget.id);
-                  },
+      child: Stack(
+        children: [
+          StreamBuilder<MovieDetail>(
+              stream: movieDetailBloc.movieDetail,
+              builder: (BuildContext context, AsyncSnapshot<MovieDetail> snapshot) {
+                if (snapshot.hasData) {
+                  final MovieDetail movieDetail = snapshot.data;
+                  if (movieDetail.error != null) {
+                    return CallRetry(
+                      message: movieDetail.error,
+                      voidCallback: () {
+                        movieDetailBloc.getDetails(id: widget.id);
+                      },
+                    );
+                  }
+                  return CustomScrollView(
+                    slivers: <Widget>[
+                      _buildAppBar(snapshot),
+                      SliverPadding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          sliver: SliverList(
+                              delegate: SliverChildListDelegate(
+                                  _buildListContent(snapshot.data)))),
+                    ],
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              }
-              return CustomScrollView(
-                slivers: <Widget>[
-                  _buildAppBar(snapshot),
-                  SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      sliver: SliverList(
-                          delegate: SliverChildListDelegate(
-                              _buildListContent(snapshot.data)))),
-                ],
-              );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
+              }),
+          Positioned(
+              bottom: 0,
+              child: Container(
+                color: Colors.white,
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Price: 25/Person', style: TextStyle(color: AppColor.black, fontWeight: AppFontWeight.medium, fontSize: AppFontSize.label),),
+                    MaterialButton(
+                      elevation: 0,
+                      padding: EdgeInsets.all(12.0),
+                      minWidth: MediaQuery.of(context).size.width*0.5,
+                      color: Colors.pink,
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => BookingScreen(movie: movieDetailBloc.getMovie(),))) ;
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                      child: Text('Booking', style: TextStyle(color: Colors.white, fontWeight: AppFontWeight.medium, fontSize: AppFontSize.medium),),
+                    ),
+                  ],
+                ),
+              ))
+        ],
+      ),
     );
   }
 
@@ -148,11 +182,12 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   SliverAppBar _buildAppBar(AsyncSnapshot<MovieDetail> snapshot) {
     return SliverAppBar(
-      backgroundColor: Colors.cyan,
+      backgroundColor: Colors.white,
+      elevation: 0,
       floating: true,
       pinned: true,
       snap: true,
-      iconTheme: const IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: AppColor.black),
       actions: <Widget>[
         StreamBuilder<Favorite>(
           stream: movieDetailBloc.favorite,
@@ -208,7 +243,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
         //   ],
         // ),
         IconButton(
-                icon: const Icon(Icons.date_range, color: Colors.red,),
+                icon: const Icon(Icons.comment, color: Colors.red,),
                 onPressed: () {
                 // dynamic date = getDate();
                 // print('Date =============> $date');
@@ -217,11 +252,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
                 },)
       ],
-      expandedHeight: 280,
+      expandedHeight: 300,
       flexibleSpace: FlexibleSpaceBar(
         background: Image.network(
           'http://image.tmdb.org/t/p/w500${snapshot.data.posterPath}',
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
         ),
       ),
     );
@@ -342,12 +377,15 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           } else {
             reviews = snap.data;
           }
-          return Column(
-            children: reviews
-                .map((Review review) => ItemReview(
-                      review: review,
-                    ))
-                .toList(),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 72),
+            child: Column(
+              children: reviews
+                  .map((Review review) => ItemReview(
+                        review: review,
+                      ))
+                  .toList(),
+            ),
           );
         }
         return Container();

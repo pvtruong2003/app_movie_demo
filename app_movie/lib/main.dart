@@ -1,6 +1,7 @@
 import 'package:app_movie/app_config.dart';
 import 'package:app_movie/common/style/color.dart';
 import 'package:app_movie/common/style/fonts.dart';
+import 'package:app_movie/screens/completed/completed_screen.dart';
 import 'package:app_movie/screens/login/login_screen.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:app_movie/screens/movie_detail/movie_detail_screen.dart';
@@ -96,8 +97,8 @@ class _MyAppState extends State<MyApp> {
         '/': (BuildContext context) => SplashScreen(),
         LoginScreen.routerName: (BuildContext ctx) => LoginScreen(),
         MainScreen.routerName: (BuildContext ctx) => MainScreen(),
-        MovieDetailScreen.routerName: (BuildContext ctx) =>
-            const MovieDetailScreen(),
+        MovieDetailScreen.routerName: (BuildContext ctx) =>  MovieDetailScreen(),
+        CompletedScreen.routerName: (BuildContext ctx) =>  CompletedScreen(),
       },
       // onGenerateRoute: (RouteSettings setting) {
       //   if (setting.name == MovieDetailScreen.routerName) {

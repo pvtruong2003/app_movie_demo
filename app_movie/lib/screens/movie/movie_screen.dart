@@ -1,4 +1,3 @@
-import 'package:app_movie/app_bar.dart';
 import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/movie_bloc.dart';
 import 'package:app_movie/call_retry.dart';
@@ -6,14 +5,12 @@ import 'package:app_movie/common/style/color.dart';
 import 'package:app_movie/common/style/fonts.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/screens/booking/booking_screen.dart';
-import 'package:app_movie/screens/check_out/check_out_screen.dart';
 import 'package:app_movie/screens/movie/widgets/item_movie.dart';
 import 'package:app_movie/screens/movie/widgets/item_top.dart';
 import 'package:app_movie/screens/movie_detail/movie_detail_screen.dart';
-import 'package:app_movie/screens/search/search_screen.dart';
+import 'package:app_movie/screens/view_more/view_more_movie.dart';
 import 'package:app_movie/wigets/list_item_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class MovieScreen extends StatefulWidget {
   @override
@@ -36,8 +33,10 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
     super.build(context);
     _movieBloc.navigatorScreen = navigatorScreen;
     TextStyle textStyle = TextStyle(color: AppColor.black, fontSize: AppFontSize.large, fontWeight: AppFontWeight.semiBold);
+    TextStyle textStyleView = TextStyle(color: Colors.pink, fontSize: AppFontSize.small, fontWeight: AppFontWeight.normal);
     return AppContainer(
       hidePadding: true,
+      key: PageStorageKey('MovieScreen'),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColor.white,
@@ -61,7 +60,7 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
         stream: _movieBloc.movies,
         builder: (BuildContext ctx, AsyncSnapshot<List<Movie>> snapshot) {
           if (snapshot.hasData) {
-           // List<Movie> movies = snapshot.data.
+            List<Movie> movies = snapshot.data;
             if (snapshot.data[0].error != null) {
               return CallRetry(
                 message: snapshot.data[0].error,
@@ -78,19 +77,28 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
                   margin: EdgeInsets.only(bottom: 8, top: 16),
                   height: MediaQuery.of(context).size.height * 0.4,
                   child: ListView.builder(
-                      reverse: true,
-                      itemCount: snapshot.data.length,
+                      itemCount: movies.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (ctx, index) {
-                           return ItemTop(movie: snapshot.data[index],);
+                           return ItemTop(movie: movies[index],);
                       }),
                 ),
               ),
 
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 4, left: 16),
-                  child: Text('Trending', style: textStyle,),
+                  padding: const EdgeInsets.only(top: 20, bottom: 4, left: 16, right: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Trending', style: textStyle,),
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (ctx) => ViewMoreMovie()));
+                          },
+                          child: Text('View more', style: textStyleView,)),
+                    ],
+                  ),
                 ),
               ),
               SliverPadding(
@@ -99,7 +107,7 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
                     delegate: SliverChildBuilderDelegate((BuildContext ctx, int index) {
                       Movie movie = snapshot.data[index];
                       return buildRow(movie);
-                    }, childCount: snapshot.data.length), itemExtent: 140),
+                    }, childCount: snapshot.data.length,), itemExtent: 140),
               )
             ]);
           }

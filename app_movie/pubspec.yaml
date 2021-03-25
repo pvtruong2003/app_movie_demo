@@ -35,6 +35,9 @@ dependencies:
   logger: any
   intl: ^0.17.0
   get_it: ^6.0.0
+  location: ^3.0.0
+  geocoder: ^0.2.1
+  geolocator: ^5.0.1
   firebase_core: ^0.4.5
   firebase_database: ^3.1.6
   firebase_auth: ^0.16.1
@@ -42,7 +45,7 @@ dependencies:
   cloud_firestore: ^0.13.5
   firebase_storage: ^3.1.6
   shared_preferences: ^2.0.5
-
+  google_maps_flutter: ^2.0.1
 
 dev_dependencies:
   flutter_test:
