@@ -2,6 +2,7 @@
 import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/main_bloc.dart';
 import 'package:app_movie/screens/favorite/favorite_screen.dart';
+import 'package:app_movie/screens/home/home_screen.dart';
 import 'package:app_movie/screens/movie/movie_screen.dart';
 import 'package:app_movie/screens/near_me/near_me_screen.dart';
 import 'package:app_movie/screens/profile/profile_sreen.dart';
@@ -22,6 +23,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void initState() {
+    pageList.add(HomeScreen());
     pageList.add(MovieScreen());
     pageList.add(NearMeScreen());
     pageList.add(FavoriteScreen());
@@ -56,6 +58,7 @@ class _MainScreenState extends State<MainScreen> {
                   _mainBloc.setPage(index);
                 },
                 items: <BottomNavigationBarItem>[
+                  _bottomBarItem(icon: Icons.home_outlined, label: 'Home'),
                   _bottomBarItem(icon: Icons.movie, label: 'Movie'),
                   _bottomBarItem(icon: Icons.near_me, label: 'Near me'),
                   _bottomBarItem(icon: Icons.favorite, label: 'Favorite'),

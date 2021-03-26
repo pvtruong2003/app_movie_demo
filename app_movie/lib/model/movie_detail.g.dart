@@ -22,6 +22,7 @@ MovieDetail _$MovieDetailFromJson(Map<String, dynamic> json) {
     overview: json['overview'] as String,
     posterPath: json['poster_path'] as String,
     status: json['status'] as String,
+    releaseDate: json['release_date'] as String ,
     voteCount: json['vote_count'] as int,
     voteAverage: (json['vote_average'] as num)?.toDouble(),
     companies: (json['production_companies'] as List<dynamic>)

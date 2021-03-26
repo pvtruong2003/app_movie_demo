@@ -10,6 +10,7 @@ class BaseApiProvider {
   }
 
   String baseUrl = 'https://api.themoviedb.org/3/movie/';
+  String baseUrl2 = 'https://api.themoviedb.org/3/';
   Dio dio;
 
   String handleError(Exception error) {

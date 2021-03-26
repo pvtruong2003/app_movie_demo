@@ -2,6 +2,8 @@ import 'package:app_movie/model/base_response/generic_collection.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/model/reviews.dart';
+import 'package:app_movie/model/movies.dart';
+import 'package:app_movie/model/list_movie.dart';
 import 'package:app_movie/service/base_provider.dart';
 import 'package:dio/dio.dart';
 
@@ -14,6 +16,21 @@ class ProviderAPI extends BaseApiProvider {
         'popular?$API_KEY&page=$page',
         options: RequestOptions(method: 'GET', baseUrl: baseUrl));
     final dynamic value = GenericCollection<Movie>.fromJson(_result.data);
+    return value;
+  }
+
+  Future<ListTrending> getTrending(int page) async {
+    _result = await dio.request<Map<String, dynamic>>(
+        'trending/all/week?$API_KEY&page=$page',
+        options: RequestOptions(method: 'GET', baseUrl: baseUrl2));
+    final value = ListTrending.fromJson(_result.data);
+    return value;
+  }
+
+  Future<ListMovie> getMoviesBy({int page, String path}) async {
+    _result = await dio.request<Map<String, dynamic>>('$path?$API_KEY&page=$page',
+        options: RequestOptions(method: 'GET', baseUrl: baseUrl));
+    final value = ListMovie.fromJson(_result.data);
     return value;
   }
 

@@ -91,7 +91,13 @@ class _MyAppState extends State<MyApp> {
                 borderSide: BorderSide(color: Colors.grey[400])),
             focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey[400]))
-          )),
+          ),
+
+           iconTheme: IconThemeData(
+             color: Colors.white
+           )
+
+      ),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
         '/': (BuildContext context) => SplashScreen(),

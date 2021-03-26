@@ -1,5 +1,6 @@
 import 'package:app_movie/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Common {
   static Future<void> showLoading(BuildContext context) async {
@@ -20,5 +21,13 @@ class Common {
     //     builder: (BuildContext context) {
     //       return ShowError(message: message);
     //     });
+  }
+
+  static parseToDate({String date}) {
+    if (date != null)
+      return DateFormat("dd MMM yyyy")
+          .format(DateFormat("yyyy-MM-dd").parse(date));
+    else
+      return 'No date';
   }
 }

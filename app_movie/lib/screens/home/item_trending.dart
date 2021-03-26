@@ -1,42 +1,44 @@
 import 'package:app_movie/common/style/color.dart';
 import 'package:app_movie/common/style/fonts.dart';
-import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/movies.dart';
-import 'package:app_movie/screens/movie_detail/movie_detail_screen.dart';
+import 'package:app_movie/screens/home/detail/home_movie_detail.dart';
+import 'package:app_movie/uitils/string_uitils.dart';
 import 'package:flutter/material.dart';
 
-class ItemTop extends StatelessWidget {
-  final Movie movie;
+class ItemTrending extends StatelessWidget {
+  final Movies movie;
 
-  const ItemTop({Key key, this.movie}) : super(key: key);
+  const ItemTrending({Key key, this.movie}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (ctx) => MovieDetailScreen(id: movie.id.toString(),)));
+        Navigator.push(context, MaterialPageRoute(builder: (ctx) => HomeMovieDetail(id: movie.id.toString(),)));
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.45,
+        height: MediaQuery.of(context).size.height * 0.4,
         margin: EdgeInsets.only(right: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           Container(
+            Container(
               height: MediaQuery.of(context).size.height * 0.32,
               width: MediaQuery.of(context).size.width * 0.45,
               decoration: BoxDecoration(
-               borderRadius: BorderRadius.circular(20.0),
-                image: DecorationImage(
-                   fit: BoxFit.cover,
-                   image: NetworkImage('http://image.tmdb.org/t/p/w500${movie.posterPath}')
-                )
-             ),
-           ),
-           SizedBox(height: 16,),
+                  borderRadius: BorderRadius.circular(20.0),
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(StringUtils.urlImage(movie.posterPath))
+                  )
+              ),
+            ),
+            SizedBox(height: 16,),
             Text(
-              movie.title,
+              //Todo check null
+              movie.title != null ? movie.title : 'No name',
               style: TextStyle(
-                  color: AppColor.black,
+                  color: AppColor.white,
                   fontSize: AppFontSize.medium,
                   fontWeight: AppFontWeight.medium),
               maxLines: 1,

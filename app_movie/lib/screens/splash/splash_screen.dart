@@ -14,13 +14,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _loginBloc = LoginBloc();
-    Future.delayed(Duration(milliseconds: 2000)).then((value) => _loginBloc.getLogin());
+ //   _loginBloc = LoginBloc();
+    //Future.delayed(Duration(milliseconds: 2000)).then((value) => _loginBloc.getLogin());
+    Future.delayed(Duration(milliseconds: 1000)).then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => MainScreen())));
   }
 
   @override
   Widget build(BuildContext context) {
-    _loginBloc.navigator = navigator;
+  //  _loginBloc.navigator = navigator;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.black,

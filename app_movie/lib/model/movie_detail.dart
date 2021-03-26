@@ -18,7 +18,7 @@ class MovieDetail {
       this.status,
       this.voteCount,
       this.voteAverage,
-      this.companies,
+      this.companies, this.releaseDate,
       this.error});
 
   MovieDetail.withError(String valError): error = valError;
@@ -58,6 +58,10 @@ class MovieDetail {
 
   @JsonKey(name: 'status')
   String status;
+
+
+  @JsonKey(name: 'release_date')
+  String releaseDate;
 
   @JsonKey(name: 'vote_count')
   int voteCount;

@@ -46,44 +46,13 @@ class _AppContainerState extends State<AppContainer> {
 
   @override
   Widget build(BuildContext context) {
+    // AnnotatedRegion<SystemUiOverlayStyle>(
+    //   value: SystemUiOverlayStyle(
+    //       statusBarColor: Colors.white,
+    //       statusBarIconBrightness: Brightness.dark)
     return _InheritedAppContainer(
       state: this,
-      child: widget.isStatusBar
-          ? AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle(
-                  statusBarColor: Colors.white,
-                  statusBarIconBrightness: Brightness.dark),
-              child: Scaffold(
-                key: scaffoldKey,
-                backgroundColor: widget.containerBackgroundColor,
-                appBar: widget.appBar,
-                resizeToAvoidBottomInset: widget.isResizeToAvoidBottomInset,
-                body: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                  child: SafeArea(
-                    top: widget.enableSafeAreaOnTop,
-                    bottom: widget.enableSafeAreaOnBottom,
-                    child: Container(
-                      color: widget.contentBackgroundColor,
-                      padding: widget.hidePadding
-                          ? EdgeInsets.zero
-                          : EdgeInsets.only(
-                              top: widget.paddingTop,
-                              left: widget.paddingLeft,
-                              right: widget.paddingRight,
-                              bottom: widget.paddingBottom),
-                      child: widget.child,
-                    ),
-                  ),
-                ),
-                bottomNavigationBar: widget.bottomNavigationBar,
-                bottomSheet: widget.bottomSheet,
-                drawer: widget.drawer,
-              ),
-            )
-          : Scaffold(
+      child: Scaffold(
               key: scaffoldKey,
               backgroundColor: widget.containerBackgroundColor,
               appBar: widget.appBar,

@@ -1,3 +1,4 @@
+import 'package:app_movie/common/style/color.dart';
 import 'package:flutter/material.dart';
 
 class CallRetry extends StatelessWidget {
@@ -12,8 +13,9 @@ class CallRetry extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: showAppBar ? AppBar(
+        backgroundColor: AppColor.white,
         leading: const BackButton(
-          color: Colors.white,
+          color: AppColor.black,
         ),
       ): null,
       body: Column(

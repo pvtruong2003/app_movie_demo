@@ -69,6 +69,12 @@ class MovieDetailBloc extends BaseBloc {
     );
   }
 
+  Future<void> init({String id}) async{
+    _movie?.sink?.add(null);
+    await Future.wait([getMovieDetail(id: id), getSimilarMovie(id: id)],
+    );
+  }
+
   Future<void> getDetail({String id}) async {
     Common.showLoading(navigatorKey.currentContext);
     await Future.wait(

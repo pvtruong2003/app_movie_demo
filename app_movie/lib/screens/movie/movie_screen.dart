@@ -19,13 +19,26 @@ class MovieScreen extends StatefulWidget {
 
 class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClientMixin<MovieScreen>{
   MovieBloc _movieBloc;
-  final int _page = 1;
+  int _page = 1;
+  var _controller  = ScrollController();
+  bool isLoading = false;
 
   @override
   void initState() {
     _movieBloc = MovieBloc();
     _movieBloc.getMovies(page: _page);
+    _movieBloc.getTrending(_page);
+    _movieBloc.getUpComing(_page);
     super.initState();
+    _controller.addListener(() {
+         double maxScroll = _controller.position.maxScrollExtent;
+         double currentScroll  = _controller.position.pixels;
+         double delta = 200.0;
+         if (maxScroll - currentScroll <= delta) {
+            _page++;
+            _movieBloc.getMovies(page: _page);
+         }
+    });
   }
 
   @override
@@ -70,7 +83,9 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
                 },
               );
             }
-            return CustomScrollView(slivers: [
+            return CustomScrollView(
+                controller: _controller,
+                slivers: [
               SliverToBoxAdapter(
                 child: Container(
                   padding: EdgeInsets.only(left: 16),
@@ -101,6 +116,7 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
                   ),
                 ),
               ),
+
               SliverPadding(
                 padding: EdgeInsets.only(bottom: 24),
                 sliver: SliverFixedExtentList(
@@ -108,7 +124,7 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
                       Movie movie = snapshot.data[index];
                       return buildRow(movie);
                     }, childCount: snapshot.data.length,), itemExtent: 140),
-              )
+              ),
             ]);
           }
           return const Center(
