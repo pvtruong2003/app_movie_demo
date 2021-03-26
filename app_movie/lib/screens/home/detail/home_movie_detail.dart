@@ -11,6 +11,7 @@ import 'package:app_movie/screens/home/detail/widgets/item_actor.dart';
 import 'package:app_movie/screens/home/detail/widgets/item_similar.dart';
 import 'package:app_movie/screens/home/detail/widgets/item_title.dart';
 import 'package:app_movie/screens/rate/rate_screen.dart';
+import 'package:app_movie/screens/ticket/ticket_screen.dart';
 import 'package:app_movie/uitils/string_uitils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -401,19 +402,15 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
             Align(
               alignment: Alignment.bottomCenter,
               child: MaterialButton(
-                onPressed: () {},
-                child: Text(
-                  'Buy Ticker',
-                  style: TextStyle(
-                      fontSize: AppFontSize.medium,
-                      fontWeight: AppFontWeight.medium),
-                ),
                 color: Colors.pink,
-                elevation: 0,
                 minWidth: size.width,
-                textColor: Colors.white,
-                splashColor: Colors.pinkAccent,
                 padding: EdgeInsets.all(14.0),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //Remove space bottom
+                onPressed: () {
+                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext ctx) => TicketScreen()));
+                },
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0.0)),
+                child: Text('Buy Ticker', style: TextStyle(color: AppColor.white, fontWeight: AppFontWeight.medium, fontSize: AppFontSize.medium),),
               ),
             )
           ],
@@ -457,9 +454,9 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
                 height: 8,
               ),
 
-              // movie.genres.isNotEmpty
-              //     ? _buildGenres(movie)
-              //     : SizedBox()
+              movie.genres.isNotEmpty
+                  ? _buildGenres(movie)
+                  : SizedBox()
             ],
           ),
         )
