@@ -1,3 +1,5 @@
+import 'package:app_movie/model/debug_mode.dart';
+import 'package:app_movie/model/list_debug.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
@@ -7,6 +9,7 @@ class LoggingInterceptor extends Interceptor{
 
   @override
   Future<void> onRequest(RequestOptions options) {
+
     print('--> ${options.method} ${options.path}');
     print('Content type: ${options.contentType}');
     print('<-- END HTTP');
@@ -15,8 +18,14 @@ class LoggingInterceptor extends Interceptor{
 
   @override
   Future<void> onResponse(Response<Object> response) {
-    print(
-        '<-- ${response.statusCode} ${response.request.method} ${response.request.path}');
+    print('<-- ${response.statusCode} ${response.request.method} ${response.request.path}');
+
+    DebugMode debugMode = DebugMode();
+    debugMode.data = response.data;
+    debugMode.method = response.request.method;
+    debugMode.param = response.statusMessage;
+    DebugMode.listDebug.add(debugMode);
+
     final String responseAsString = response.data.toString();
     if (responseAsString.length > _maxCharactersPerLine) {
       final int iterations =
@@ -40,7 +49,7 @@ class LoggingInterceptor extends Interceptor{
             // printTime: true // Should each log print contain a timestamp6♠
         )
       );
-      logger.d('Response Data', response.data);
+      //logger.d('Response Data', response.data);
     }
     print('<-- END HTTP');
 

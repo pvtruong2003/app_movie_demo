@@ -6,15 +6,23 @@ part 'reviews.g.dart';
 @JsonSerializable(createToJson: false)
 class Review {
   Review(
-      this.id, this.author, this.content, this.createdAt, this.authorDetails);
+      this.id,
+      this.author,
+      this.content,
+      this.createdAt,
+      this.authorDetails);
 
   factory Review.fromJson(Map<String, dynamic> js) => _$ReviewFromJson(js);
 
-  final String id;
-  final String author;
-  final String content;
+  Review.withError(String valueE) : error = valueE;
+
+  String id;
+  String author;
+  String content;
   @JsonKey(name: 'created_at')
-  final String createdAt;
+  String createdAt;
   @JsonKey(name: 'author_details')
-  final AuthorDetail authorDetails;
+  AuthorDetail authorDetails;
+
+  String error;
 }

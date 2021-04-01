@@ -3,38 +3,39 @@ import 'package:app_movie/bloc/movie_detail_bloc.dart';
 import 'package:app_movie/common/common.dart';
 import 'package:app_movie/common/style/color.dart';
 import 'package:app_movie/common/style/fonts.dart';
-import 'package:app_movie/debouncer.dart';
-import 'package:app_movie/main.dart';
 import 'package:app_movie/model/actor.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/movie_detail.dart';
+import 'package:app_movie/screens/booking/booking_screen.dart';
 import 'file:///D:/BSTAR/movie/app_movie/lib/screens/home/booking/booking_movie.dart';
 import 'package:app_movie/screens/home/detail/widgets/item_actor.dart';
 import 'package:app_movie/screens/home/detail/widgets/item_similar.dart';
 import 'package:app_movie/screens/home/detail/widgets/item_title.dart';
+import 'package:app_movie/screens/rate/rate_screen.dart';
 import 'package:app_movie/screens/reviews/add_rating_screen.dart';
 import 'package:app_movie/screens/reviews/reviews_screen.dart';
+import 'package:app_movie/screens/ticket/ticket_screen.dart';
 import 'package:app_movie/uitils/string_uitils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HomeMovieDetail extends StatefulWidget {
+class HomeMovieDetail2 extends StatefulWidget {
   final String id;
 
-  const HomeMovieDetail({Key key, this.id}) : super(key: key);
+  const HomeMovieDetail2({Key key, this.id}) : super(key: key);
 
   @override
-  _HomeMovieDetailState createState() => _HomeMovieDetailState();
+  _HomeMovieDetail2State createState() => _HomeMovieDetail2State();
 }
 
-class _HomeMovieDetailState extends State<HomeMovieDetail> {
+class _HomeMovieDetail2State extends State<HomeMovieDetail2> {
   MovieDetail movie;
   @override
   void initState() {
     super.initState();
-    movieDetailBloc.init(id: widget.id);
+    movieDetailBloc.getMoviesDetail(id: widget.id);
     //ToDo homepage open url
   }
   @override
@@ -52,7 +53,7 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
         child: Stack(
           children: [
             StreamBuilder<MovieDetail>(
-              stream: movieDetailBloc.movieDetail,
+              stream: movieDetailBloc.moviesDetail,
               builder: (context, snapshot) {
                 if (snapshot.hasData ) {
                   if (snapshot.data == null) {
@@ -69,17 +70,11 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
                         actions: [
                           IconButton(
                             icon: Icon(Icons.ios_share),
-                            onPressed: () {
-                              debouncer.run(() {
-                                Share.share(movie.homepage, subject: movie.title);
-                              });
-                            },
+                            onPressed: () {},
                           ),
                           IconButton(
                             icon: Icon(Icons.favorite_border_outlined),
-                            onPressed: () {
-                                 movieDetailBloc.addFavorite(movieId: movie.id.toString(), isFavorite: true);
-                            },
+                            onPressed: () {},
                           ),
                         ],
                         expandedHeight: 300,
@@ -339,7 +334,7 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
 
                       SliverToBoxAdapter(
                         child: Container(
-                          height: 220,
+                          height: 280,
                           padding: EdgeInsets.only(left: 16, right: 16),
                           child: ListView.builder(
                             itemCount: actors.length,
@@ -349,62 +344,6 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
                               return ItemActor(actor: actors[index],);
                             },
                           ),
-                        ),
-                      ),
-
-
-                      SliverToBoxAdapter(
-                        child: Container(
-                          width: size.width,
-                          height: 1,
-                          color: AppColor.grayBorder,
-                          margin: EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 20),
-                        ),
-                      ),
-
-                      SliverToBoxAdapter(
-                        child: ButtonBar(
-                          mainAxisSize: MainAxisSize.max,
-                          buttonHeight: 40,
-                          alignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Similar Movies', style: TextStyle(
-                                color: AppColor.white,
-                                fontWeight: AppFontWeight.medium,
-                                fontSize: AppFontSize.medium),),
-                            Text('SEE ALL', style: TextStyle(
-                                color: AppColor.white,
-                                fontWeight: AppFontWeight.normal,
-                                fontSize: AppFontSize.label),)
-                          ],),
-                      ),
-
-
-                      SliverToBoxAdapter(
-                        child: StreamBuilder<List<Movie>>(
-                          stream: movieDetailBloc.similarMovies,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData && snapshot.data.isNotEmpty) {
-
-                              if (snapshot.data[0].error != null) {
-                                 return Container(height: 24,);
-                              }
-                              return Container(
-                                height: 320,
-                                padding: EdgeInsets.only(left: 16, right: 16),
-                                child: ListView.builder(
-                                  itemCount: snapshot.data.length,
-                                  padding: EdgeInsets.only(top: 12),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (BuildContext ctx, int index) {
-                                    return ItemSimilar(movie: snapshot.data[index],);
-                                  },
-                                ),
-                              );
-                            }
-                            return Container();
-                          }
                         ),
                       ),
 

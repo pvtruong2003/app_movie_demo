@@ -27,6 +27,15 @@ class ProviderAPI extends BaseApiProvider {
     return value;
   }
 
+  Future<void> addRating({String id}) async {
+     final body  =   FormData.fromMap({'value': 8.5});
+    // final response = await dio.request<Map<String, dynamic>>('$id/rating?$API_KEY',
+    //     options: RequestOptions(method: 'POST', baseUrl: baseUrl), data: body);
+    // return ResponseRating.fromJson(response.data);
+    final response = await dio.post(baseUrl+'$id/rating?$API_KEY', data: {'value': 8.5});
+    print(response.data);
+  }
+
   Future<ListMovie> getMoviesBy({int page, String path}) async {
     _result = await dio.request<Map<String, dynamic>>('$path?$API_KEY&page=$page',
         options: RequestOptions(method: 'GET', baseUrl: baseUrl));

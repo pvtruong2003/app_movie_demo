@@ -10,7 +10,9 @@ class Movie {
       this.title,
       this.posterPath,
       this.overview,
-      this.genreIds});
+      this.genreIds,
+      this.error
+      });
 
   factory Movie.fromJson(Map<String, dynamic> js) => _$MovieFromJson(js);
 

@@ -77,7 +77,7 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
             if (snapshot.data[0].error != null) {
               return CallRetry(
                 message: snapshot.data[0].error,
-                showAppBar: false,
+                hideAppbar: false,
                 voidCallback: () async{
                   _movieBloc.getMovies(page: _page);
                 },
@@ -166,7 +166,7 @@ class _MovieScreenState extends State<MovieScreen> with AutomaticKeepAliveClient
               if (snapshot.data[0].error != null) {
                 return CallRetry(
                   message: snapshot.data[0].error,
-                  showAppBar: false,
+                  hideAppbar: false,
                   voidCallback: () async{
                     _movieBloc.getMovies(page: _page);
                   },

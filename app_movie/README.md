@@ -33,8 +33,12 @@ DateTime tempDate = new DateFormat("yyyy-MM-dd hh:mm:ss").parse(savedDateString)
 String date = DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
 
 https://www.tutorialkart.com/dart/dart-list/
+https://github.com/jameelsocorro/profile_app_ui
+https://raw.githubusercontent.com/jameelsocorro/profile_app_ui/master/assets/images/thumbnail.png
+
 
 //ToDo https://www.behance.net/gallery/61856793/Kino-the-Movie-iOS-UI-Kit
+https://www.pinterest.com/search/pins/?q=Movie%20app&rs=srs&b_id=BPAJr39f6iebAAAAAAAAAAB2t2dCTorHY1ZCxFxyplwfAIZKXoy6yJOkkS5l2FBSrC2pwjohLgiJ&source_id=rlp_xoZ7gZUq
 
 https://dribbble.com/shots/14881170-Cinema-Ticket-App
 https://dribbble.com/shots/6479699-Cinema-Ticket-App
@@ -44,5 +48,7 @@ https://design4users.com/ui-for-movies-collection-of-cinema-app-designs/
 
 https://blog.codemagic.io/creating-a-route-calculator-using-google-maps/
 https://www.raywenderlich.com/4466319-google-maps-for-flutter-tutorial-getting-started
+
+
 
 

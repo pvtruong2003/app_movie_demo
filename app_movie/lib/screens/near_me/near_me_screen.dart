@@ -3,6 +3,7 @@ import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/location.dart';
 import 'package:app_movie/screens/completed/completed_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,7 +40,8 @@ class _NearMeScreenState extends State<NearMeScreen> with AutomaticKeepAliveClie
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return AppContainer(
+    //ToDo Build release map crash
+    return kReleaseMode ? AppContainer(child: Container()):  AppContainer(
         isStatusBar: false,
         hidePadding: true,
         child: FutureBuilder<QuerySnapshot>(

@@ -12,6 +12,8 @@ import 'package:app_movie/model/movie_rating.dart';
 import 'package:app_movie/model/reviews.dart';
 import 'package:app_movie/service/provider_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,11 +22,13 @@ MovieDetailBloc movieDetailBloc = MovieDetailBloc();
 class MovieDetailBloc extends BaseBloc {
   final ProviderAPI _providerAP = locator<ProviderAPI>();
   String _movieId;
+  FirebaseUser user;
 
   final BehaviorSubject<List<Movie>> _similarMovie =
       BehaviorSubject<List<Movie>>();
   final BehaviorSubject<List<Review>> _review = BehaviorSubject<List<Review>>();
   final BehaviorSubject<MovieDetail> _movie = BehaviorSubject<MovieDetail>();
+  final BehaviorSubject<MovieDetail> _movieDetail = BehaviorSubject<MovieDetail>();
   final BehaviorSubject<MovieRating> _movieRating =
       BehaviorSubject<MovieRating>();
   final BehaviorSubject<List<Cart>> _cart = BehaviorSubject<List<Cart>>();
@@ -33,6 +37,7 @@ class MovieDetailBloc extends BaseBloc {
   Stream<List<Movie>> get similarMovies => _similarMovie?.stream;
   Stream<List<Review>> get reviews => _review?.stream;
   Stream<MovieDetail> get movieDetail => _movie?.stream;
+  Stream<MovieDetail> get moviesDetail => _movieDetail?.stream;
   Stream<MovieRating> get movieRating => _movieRating?.stream;
   Stream<List<Cart>> get cart => _cart?.stream;
   Stream<Favorite> get favorite => _favorite?.stream;
@@ -64,9 +69,25 @@ class MovieDetailBloc extends BaseBloc {
     _movie?.sink?.add(null);
     _cart?.sink?.add(carts);
     _favorite?.sink?.add(null);
+    await currentUser();
     await Future.wait(
       [getMovieDetail(id: id), getReviews(id: id), getSimilarMovie(id: id)],
     );
+  }
+
+  Future<void> currentUser() async {
+    user = await mAuth.currentUser();
+    print('----------> UserId ${user.uid}');
+  }
+
+  Future<void> getMoviesDetail({String id}) async {
+    _movieDetail?.sink?.add(null);
+    try {
+      final MovieDetail data = await _providerAP.getDetailMovie(id);
+      _movieDetail?.sink?.add(data);
+    } on Exception catch (e, st) {
+      _movieDetail?.sink?.add(MovieDetail.withError(_providerAP.handleError(e)));
+    }
   }
 
   Future<void> init({String id}) async{
@@ -127,8 +148,7 @@ class MovieDetailBloc extends BaseBloc {
       _similarMovie?.sink?.add(data.results);
     } on Exception catch (e, st) {
       print('Get error --------------> ${_providerAP.handleError(e)}');
-      _similarMovie?.sink
-          ?.add(<Movie>[Movie.withError(_providerAP.handleError(e))]);
+      _similarMovie?.sink?.add(<Movie>[Movie.withError(_providerAP.handleError(e))]);
     }
   }
 
@@ -145,11 +165,12 @@ class MovieDetailBloc extends BaseBloc {
       'isFavorite': isFavorite,
       'title': _movie?.value?.title,
       'overview': _movie?.value?.overview,
-      'url': _movie?.value?.posterPath
+      'url': _movie?.value?.posterPath,
     };
     await Firestore.instance
         .collection('movies')
-        .add(data)
+        .document("uuid-123456")
+        .setData(data)
         .then((value) => favoriteBloc.getFavorite())
         .catchError((e) {
       print(e.toString());
@@ -208,5 +229,6 @@ class MovieDetailBloc extends BaseBloc {
     _cart?.close();
     _movieRating?.close();
     _favorite?.close();
+    _movieDetail?.close();
   }
 }

@@ -23,7 +23,7 @@ class SimilarMoviesScreen extends StatelessWidget {
              if (snapshot.data[0].error != null) {
                return CallRetry(
                  message: snapshot.data[0].error,
-                 showAppBar: false,
+                 hideAppbar: false,
                  voidCallback: () async{
                  },
                );

@@ -2,6 +2,7 @@ import 'package:app_movie/bloc/base_bloc.dart';
 import 'package:app_movie/constants.dart';
 import 'package:app_movie/main.dart';
 import 'package:app_movie/service/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -56,8 +57,18 @@ class LoginBloc extends BaseBloc {
             email: _email?.value, password: _password?.value)
         .then((value) {
       StoreData.store(KeyStore.login, true);
-      navigator(null);
+      StoreData.storeUUID(KeyStore.uuid, value.user.uid);
+      addUser(value.user);
     }).catchError((e) => navigator(e.toString()));
+  }
+
+  Future<void> addUser(FirebaseUser user) async {
+    await Firestore.instance.collection("users").add({
+      'email': user.email,
+      'uuid': user.uid,
+      'firstName': '',
+      'lastName': ''
+    }).then((value) => navigator(null));
   }
 
   signInEmailPassword() async {
@@ -68,6 +79,7 @@ class LoginBloc extends BaseBloc {
         .then((value) {
       navigator(null);
       StoreData.store(KeyStore.login, true);
+      StoreData.storeUUID(KeyStore.uuid, value.user.uid);
     }).catchError((e) => navigator(e.toString()));
   }
 

@@ -1,8 +1,12 @@
 import 'package:app_movie/bloc/login_bloc.dart';
+import 'package:app_movie/debouncer.dart';
+import 'package:app_movie/debug_screen.dart';
+import 'package:app_movie/main.dart';
 import 'package:app_movie/screens/login/login_screen.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shake/shake.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,18 +14,29 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
   LoginBloc _loginBloc;
+  Debouncer debouncer = Debouncer(milliseconds: 1500);
+
   @override
   void initState() {
     super.initState();
- //   _loginBloc = LoginBloc();
-    //Future.delayed(Duration(milliseconds: 2000)).then((value) => _loginBloc.getLogin());
-    Future.delayed(Duration(milliseconds: 1000)).then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) => MainScreen())));
+    ShakeDetector _ = ShakeDetector.autoStart(onPhoneShake: () {
+      debouncer.run(() {
+        _openDebug();
+      });
+    });
+    _loginBloc = LoginBloc();
+    Future.delayed(Duration(milliseconds: 2000)).then((value) => _loginBloc.getLogin());
+  }
+
+  _openDebug() async {
+    var _= await navigatorKey.currentState.pushNamed(DebugScreen.routerName);
   }
 
   @override
   Widget build(BuildContext context) {
-  //  _loginBloc.navigator = navigator;
+    _loginBloc.navigator = navigator;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.black,

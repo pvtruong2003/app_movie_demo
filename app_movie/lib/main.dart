@@ -1,17 +1,24 @@
+import 'dart:io';
+
 import 'package:app_movie/app_config.dart';
 import 'package:app_movie/common/style/color.dart';
 import 'package:app_movie/common/style/fonts.dart';
+import 'package:app_movie/debouncer.dart';
+import 'package:app_movie/debug_screen.dart';
 import 'package:app_movie/screens/completed/completed_screen.dart';
 import 'package:app_movie/screens/login/login_screen.dart';
 import 'package:app_movie/screens/main/main_screen.dart';
 import 'package:app_movie/screens/movie_detail/movie_detail_screen.dart';
+import 'package:app_movie/screens/profile_detail/profile_detail.dart';
 import 'package:app_movie/screens/splash/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 //Use to get context from anywhere
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+Debouncer debouncer = Debouncer(milliseconds: 500);
 FirebaseAuth mAuth = FirebaseAuth.instance;
 
 
@@ -65,6 +72,13 @@ class _MyAppState extends State<MyApp> {
     //  //   systemNavigationBarDividerColor: Colors.white, // Bottom bar
     //     systemNavigationBarIconBrightness: Brightness.light));
 
+    if (Platform.isAndroid) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
@@ -105,6 +119,8 @@ class _MyAppState extends State<MyApp> {
         MainScreen.routerName: (BuildContext ctx) => MainScreen(),
         MovieDetailScreen.routerName: (BuildContext ctx) =>  MovieDetailScreen(),
         CompletedScreen.routerName: (BuildContext ctx) =>  CompletedScreen(),
+        ProfileDetailScreen.routerName: (BuildContext ctx) => ProfileDetailScreen(),
+        DebugScreen.routerName: (BuildContext ctx) => DebugScreen(),
       },
       // onGenerateRoute: (RouteSettings setting) {
       //   if (setting.name == MovieDetailScreen.routerName) {

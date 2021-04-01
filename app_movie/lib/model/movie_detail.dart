@@ -42,7 +42,7 @@ class MovieDetail {
   int budget;
 
   @JsonKey(name: 'genres')
-  List<Genres> genres;
+  List<Genres> genres = [];
 
   @JsonKey(name: 'homepage')
   String homepage;
