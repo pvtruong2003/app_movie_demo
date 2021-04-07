@@ -28,23 +28,23 @@ class BookingBloc extends BaseBloc {
 
   updateTime({String date}) {
     List<Times> time = _book?.value?.times?.where((element) => date == element.date)?.toList();
+    time.forEach((element) {
+      element.isSelected = false;
+    });
     _times?.sink?.add(time);
   }
 
- updateSelectTime({Times times, int index}) {
-   List<Times> time = _book?.value?.times
-        ?.where((element) => times.date == element.date)
+ updateSelectTime({Times itemTime, int index}) {
+    List<Times> time = _book?.value?.times
+        ?.where((element) => itemTime.date == element.date)
         ?.toList();
-   _times?.value?.forEach((element) {
-      element.isSelect = false;
-    });
-    time[index] = times;
     time.forEach((element) {
-      print(element.isSelect.toString() + element.date + times.date);
+      element.isSelected = false;
     });
+    itemTime.isSelected = true;
+    time[index] = itemTime;
     _times?.sink?.add(time);
- }
-
+  }
 
   @override
   void onDispose() {

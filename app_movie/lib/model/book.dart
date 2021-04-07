@@ -21,15 +21,15 @@ class Times {
   String date;
   String time;
   int price;
-  bool isSelect;
+  bool isSelected;
 
-  Times({this.date, this.time, this.price, this.isSelect = false});
+  Times({this.date, this.time, this.price, this.isSelected = false});
 
   Times.fromJson(Map<String, dynamic> json) {
     date = json['date'];
     time = json['time'];
     price = json['price'];
-    isSelect = false;
+    isSelected = false;
   }
 
 }

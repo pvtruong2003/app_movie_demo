@@ -6,6 +6,7 @@ import 'package:app_movie/common/style/fonts.dart';
 import 'package:app_movie/model/book.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/screens/home/booking/item_date.dart';
+import 'package:app_movie/screens/home/widgets/navigator_screen.dart';
 import 'package:app_movie/uitils/string_uitils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ class _BookingMovieState extends State<BookingMovie> {
                   flexibleSpace: FlexibleSpaceBar(
                     titlePadding: EdgeInsets.only(left: 16.0, bottom: 20.0),
                     title: Text(
-                      'Movie',
+                      movieDetail.title,
                       style: TextStyle(
                           color: AppColor.white,
                           fontWeight: AppFontWeight.medium,
@@ -98,7 +99,7 @@ class _BookingMovieState extends State<BookingMovie> {
                 ),
                 SliverToBoxAdapter(
                   child: Container(
-                    height: 300,
+                    height: 400,
                     child: StreamBuilder<List<Times>>(
                         stream: bookingBloc.times,
                         builder: (context, snapshot) {
@@ -108,16 +109,15 @@ class _BookingMovieState extends State<BookingMovie> {
                                   vertical: 20, horizontal: 16),
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
+                                crossAxisCount: 4,
                                 crossAxisSpacing: 12,
                                 mainAxisSpacing: 12,
                               ),
                               itemBuilder: (ctx, index) {
-                                Times times = snapshot.data[index];
+                                Times item = snapshot.data[index];
                                 return InkWell(
                                   onTap: () {
-                                     times.isSelect = true;
-                                     bookingBloc.updateSelectTime(times: times, index: index);
+                                     bookingBloc.updateSelectTime(itemTime: item, index: index);
                                   },
                                   child: Container(
                                       alignment: Alignment.center,
@@ -125,28 +125,18 @@ class _BookingMovieState extends State<BookingMovie> {
                                           borderRadius:
                                               BorderRadius.circular(8.0),
                                           border: Border.all(
-                                              color: times.isSelect  ? AppColor.white : AppColor.grayBorder,
+                                              color: item.isSelected  ? AppColor.white : AppColor.grayBorder,
                                               width: 1)),
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            times.time,
-                                            style: TextStyle(
-                                                color: AppColor.white.withOpacity(
-                                                  0.7,
-                                                ),
-                                                fontWeight: AppFontWeight.normal,
-                                                fontSize: AppFontSize.label),
+                                            item.time,
+                                            style: _buildTextStyle(item),
                                           ),
                                           Text(
-                                            times.price.toString(),
-                                            style: TextStyle(
-                                                color: times.isSelect ? AppColor.white : AppColor.white.withOpacity(
-                                                  0.7,
-                                                ),
-                                                fontWeight:  times.isSelect ? AppFontWeight.medium  :AppFontWeight.normal,
-                                                fontSize: AppFontSize.text),
+                                            item.price.toString(),
+                                            style: _buildTextStyle(item),
                                           )
                                         ],
                                       )),
@@ -161,33 +151,7 @@ class _BookingMovieState extends State<BookingMovie> {
                 ),
               ],
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: MaterialButton(
-                color: Colors.pink,
-                minWidth: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.all(14.0),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                //Remove space bottom
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext ctx) => BookingMovie(
-                            movieDetailBloc: movieDetailBloc,
-                          )));
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0.0)),
-                child: Text(
-                  'CHOOSE SEATS',
-                  style: TextStyle(
-                      color: AppColor.white,
-                      fontWeight: AppFontWeight.medium,
-                      fontSize: AppFontSize.medium),
-                ),
-              ),
-            )
+           _buildButtonBuyTicket(),
           ],
         ));
 
@@ -316,7 +280,31 @@ class _BookingMovieState extends State<BookingMovie> {
     //     ))
   }
 
-   _buildListDate() {
+  Align _buildButtonBuyTicket() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: NavigatorScreen(
+        textButton: 'CHOOSE SEATS',
+        onPressed: () {
+
+        },
+      ),
+    );
+  }
+
+  TextStyle _buildTextStyle(Times item) {
+    return TextStyle(
+        color: item.isSelected
+            ? AppColor.white
+            : AppColor.white.withOpacity(
+                0.7,
+              ),
+        fontWeight:
+            item.isSelected ? AppFontWeight.medium : AppFontWeight.normal,
+        fontSize: item.isSelected ? AppFontSize.medium : AppFontSize.text);
+  }
+
+  _buildListDate() {
     return Container(
       color: AppColor.black,
       height: 60,

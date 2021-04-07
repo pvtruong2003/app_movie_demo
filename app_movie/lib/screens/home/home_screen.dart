@@ -7,6 +7,7 @@ import 'package:app_movie/common/style/fonts.dart';
 import 'package:app_movie/loading.dart';
 import 'package:app_movie/model/movies.dart';
 import 'package:app_movie/model/movies_home.dart';
+import 'package:app_movie/screens/home/detail/home_movie_detail.dart';
 import 'package:app_movie/screens/home/item_trending.dart';
 import 'package:app_movie/screens/view_more/view_more_movie.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return AppContainer(
       hidePadding: true,
       isStatusBar: false,
-      contentBackgroundColor: Colors.black,
+      contentBackgroundColor: AppColor.black,
+      containerBackgroundColor: AppColor.black,
       child: StreamBuilder<MovieHome>(
         stream: _homeBloc.moviesHome,
         builder: (context, snapshot) {
@@ -146,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       ),
     );
-
 
     // return AppContainer(
     //   hidePadding: true,
@@ -335,13 +336,16 @@ class _HomeScreenState extends State<HomeScreen> {
           );
   }
 
-  Stack _itemPageView(Movies movies) {
+  Stack _itemPageView(Movies movie) {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.network(
-          'http://image.tmdb.org/t/p/w500/${movies.posterPath}',
-          fit: BoxFit.cover,
+        InkWell(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => HomeMovieDetail(id: movie.id.toString(),))),
+          child: Image.network(
+            'http://image.tmdb.org/t/p/w500/${movie.posterPath}',
+            fit: BoxFit.cover,
+          ),
         ),
         Positioned(
             top: 0,
@@ -360,7 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                movies.title,
+                movie.title,
                 style: TextStyle(
                     color: AppColor.white,
                     fontWeight: AppFontWeight.semiBold,

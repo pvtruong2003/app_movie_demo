@@ -9,6 +9,7 @@ import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/model/movie_detail.dart';
 import 'package:app_movie/model/reviews.dart';
 import 'package:app_movie/screens/booking/booking_screen.dart';
+import 'package:app_movie/screens/home/detail/widgets/item_genres.dart';
 import 'package:app_movie/screens/movie_detail/widgets/item_all.dart';
 import 'package:app_movie/screens/movie_detail/widgets/item_reviews.dart';
 import 'package:flutter/material.dart';

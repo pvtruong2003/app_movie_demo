@@ -49,7 +49,12 @@ class _BookingScreenState extends State<BookingScreen> {
     return days;
   }
 
-  _getCurrentLocation() async {
+ Future<void> _getCurrentLocation() async {
+    //Todo Note
+   //call this avoid leak memory. Only use setState when call fun async
+    if (!mounted) {
+      return;
+    }
     await _geoLocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) {
       setState(() {
         _position = position;

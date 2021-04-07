@@ -75,7 +75,7 @@ class ProviderAPI extends BaseApiProvider {
 
   Future<GenericCollection<Movie>> searchMovie(String query) async {
     final Map<String, dynamic> queryParameters = <String, dynamic>{
-      r'query': query
+      'query': query
     };
     _result = await dio.request<Map<String, dynamic>>(
       'search/movie?$API_KEY',

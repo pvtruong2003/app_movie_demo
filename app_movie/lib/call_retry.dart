@@ -1,3 +1,4 @@
+import 'package:app_movie/common/common.dart';
 import 'package:app_movie/common/style/color.dart';
 import 'package:flutter/material.dart';
 
@@ -31,6 +32,7 @@ class CallRetry extends StatelessWidget {
           TextButton(
               style: TextButton.styleFrom(primary: Colors.white),
               onPressed: () {
+                Common.showLoading(context);
                 voidCallback?.call();
               },
               child: const Text(

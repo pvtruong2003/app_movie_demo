@@ -21,8 +21,7 @@ class _NearMeScreenState extends State<NearMeScreen> with AutomaticKeepAliveClie
 
   Future<String> _setStyle() async {
     String data;
-    data = await DefaultAssetBundle.of(context)
-        .loadString('assets/maps_style.json');
+    data = await DefaultAssetBundle.of(context).loadString('assets/maps_style.json');
     return data;
   }
 

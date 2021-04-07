@@ -1,5 +1,6 @@
 import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/rating_bloc.dart';
+import 'package:app_movie/bloc/review_bloc.dart';
 import 'package:app_movie/common/style/color.dart';
 import 'package:app_movie/common/style/fonts.dart';
 import 'package:app_movie/model/rating.dart';
@@ -9,8 +10,8 @@ import 'package:flutter/material.dart';
 
 class AddRatingScreen extends StatefulWidget {
   final String movieId;
-
-  const AddRatingScreen({Key key, this.movieId}) : super(key: key);
+  final ReviewBloc reviewBloc;
+  const AddRatingScreen({Key key, this.movieId, this.reviewBloc}) : super(key: key);
 
   @override
   _AddRatingScreenState createState() => _AddRatingScreenState();
@@ -20,9 +21,7 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
   RatingBloc ratingBloc;
   @override
   void initState() {
-    if (ratingBloc == null) {
-      ratingBloc = RatingBloc();
-    }
+    ratingBloc = RatingBloc();
     super.initState();
   }
 
@@ -67,6 +66,7 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
                       height: 24,
                     ),
                     StreamBuilder<Rating>(
+                      initialData: Rating(ratingOne: false, ratingTwo: false, ratingThree: false, ratingFour: false, ratingFive: false),
                       stream: ratingBloc.rating,
                       builder: (context, snapshot) {
                         Rating rating = snapshot.data;
@@ -156,6 +156,8 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
                           FocusScope.of(context).requestFocus(FocusNode());
                           ratingBloc.addRating(movieId: widget.movieId);
                           ratingBloc.updateRating();
+                          widget.reviewBloc.getReviews(id: widget.movieId);
+                          Navigator.pop(context);
                         },
                         child: Text(
                           'Send',
@@ -171,7 +173,7 @@ class _AddRatingScreenState extends State<AddRatingScreen> {
 
   @override
   void dispose() {
-    ratingBloc.onDispose();
     super.dispose();
+    ratingBloc.onDispose();
   }
 }
