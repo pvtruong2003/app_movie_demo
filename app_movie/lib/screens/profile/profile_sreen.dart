@@ -17,7 +17,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveClientMixin<ProfileScreen>{
   @override
   Widget build(BuildContext context) {
-    print('---------------> ProfileScreen');
     super.build(context);
     return Scaffold(
       appBar: AppBar(
@@ -27,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
           IconButton(onPressed: () {}, icon: Icon(Icons.wb_sunny))
         ],
       ),
-      body:  SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             ProfilePic(onPressed: () => Navigator.pushNamed(context, ProfileDetailScreen.routerName),),
@@ -43,7 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               onPressed: (){}, child: Text('Upgrade to Pro', style: TextStyle(color: AppColor.black.withOpacity(0.9), fontWeight: AppFontWeight.normal, fontSize: AppFontSize.label),),),
             SizedBox(height: 16),
-            ProfileMenu(icon: Icons.emoji_people, text: "My account",press: () {
+            ProfileMenu(icon: Icons.emoji_people, text: "C",press: () {
 
             },
             ),

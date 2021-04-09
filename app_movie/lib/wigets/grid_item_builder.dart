@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 typedef ItemWidgetBuilder<T> = Widget Function(BuildContext context, T item);
 
 class GridItemBuilder<T> extends StatelessWidget {
-  const GridItemBuilder({Key key, this.items, this.itemBuilder})
-      : super(key: key);
+
+  const GridItemBuilder({Key key, this.items, this.itemBuilder}) : super(key: key);
 
   final List<T> items;
   final ItemWidgetBuilder<T> itemBuilder;

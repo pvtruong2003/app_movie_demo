@@ -2,9 +2,11 @@ import 'package:app_movie/app_container.dart';
 import 'package:app_movie/bloc/search_bloc.dart';
 import 'package:app_movie/common/style/color.dart';
 import 'package:app_movie/common/style/fonts.dart';
+import 'package:app_movie/common/widgets/item_see_all.dart';
 import 'package:app_movie/model/movie.dart';
 import 'package:app_movie/screens/home/search/item_popular.dart';
 import 'package:app_movie/screens/home/search/item_recent.dart';
+import 'package:app_movie/screens/home/search/textfield_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -80,102 +82,100 @@ class _SearchMovieScreenState extends State<SearchMovieScreen> {
   @override
   Widget build(BuildContext context) {
     return AppContainer(
-       hidePadding: true,
+        hidePadding: true,
         contentBackgroundColor: AppColor.black,
         containerBackgroundColor: AppColor.black,
         child: SingleChildScrollView(
           padding: EdgeInsets.only(top: 20, left: 16, right: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            Text(
-              'Search',
-              style: TextStyle(
-                  fontSize: AppFontSize.text,
-                  fontWeight: AppFontWeight.normal,
-                  color: AppColor.grayA6),
-            ),
-            TextField(
-              onSubmitted: (String value) {
-                searchBloc.onSearchMovies(text: value);
-              },
-              style: TextStyle(
-                  fontSize: AppFontSize.label,
-                  fontWeight: AppFontWeight.normal,
-                  color: AppColor.white),
-              decoration: InputDecoration(
-                hintText: 'Movie, Actor, Directors...',
-                hintStyle: TextStyle(
-                    fontSize: AppFontSize.large,
-                    fontWeight: AppFontWeight.medium,
-                    color: AppColor.grayA6),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                disabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey)),
-              ),
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Recent',
-                    style: TextStyle(
-                        fontSize: AppFontSize.medium,
-                        fontWeight: AppFontWeight.medium,
-                        color: AppColor.white)),
-                Text('SEE ALL',
-                    style: TextStyle(
-                        fontSize: AppFontSize.text,
-                        fontWeight: AppFontWeight.normal,
-                        color: AppColor.white)),
-              ],
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.37,
-              child: ListView.builder(
-                  itemCount: moviesRecent.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (ctx, index) {
-                    return ItemRecent(
-                      movie: moviesRecent[index],
-                    );
-                  }),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Popular',
-                    style: TextStyle(
-                        fontSize: AppFontSize.medium,
-                        fontWeight: AppFontWeight.medium,
-                        color: AppColor.white)),
-                Text('SEE ALL',
-                    style: TextStyle(
-                        fontSize: AppFontSize.text,
-                        fontWeight: AppFontWeight.normal,
-                        color: AppColor.white)),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height,
-                child: ListView.builder(
-                    itemCount: moviesPopular.length,
-                    padding: EdgeInsets.only(bottom: 400),
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (ctx, index) {
-                      return ItemPopular(movie: moviesPopular[index],);
-                    }))
-          ],
-        )));
+          child: StreamBuilder<List<Movie>>(
+            stream: searchBloc.searchMovies,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data.isNotEmpty) {
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ..._buildSearch(),
+                      Expanded(child: ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (ctx, index){
+                        return ItemPopular(movie: snapshot.data[index],);
+                      }))
+                    ],
+                  ),
+                );
+              }
+              return _buildContentDefault(context);
+            }
+          )));
+  }
+
+  Column _buildContentDefault(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ..._buildSearch(),
+        ItemSeeAll(
+          title: 'Recent',
+          onPressed: () => print('Recent'),
+        ),
+        const SizedBox(
+          height: 24,
+        ),
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.37,
+          child: ListView.builder(
+              itemCount: moviesRecent.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (ctx, index) {
+                return ItemRecent(
+                  movie: moviesRecent[index],
+                );
+              }),
+        ),
+        ItemSeeAll(
+          title: 'Popular',
+          onPressed: () => print('Popular'),
+        ),
+        SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: ListView.builder(
+                itemCount: moviesPopular.length,
+                padding: EdgeInsets.only(bottom: 400),
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (ctx, index) {
+                  return ItemPopular(
+                    movie: moviesPopular[index],
+                  );
+                }))
+      ],
+    );
+  }
+
+  List<Widget> _buildSearch() {
+    return [
+      Text(
+        'Search',
+        style: TextStyle(
+            fontSize: AppFontSize.text,
+            fontWeight: AppFontWeight.normal,
+            color: AppColor.grayA6),
+      ),
+      TextFieldSearch(
+        onSearch: (String value){
+          searchBloc.onSearchMovies(text: value);
+        },
+      ),
+      const SizedBox(
+        height: 24,
+      ),
+    ];
+  }
+
+  @override
+  void dispose() {
+    searchBloc.onDispose();
+    super.dispose();
   }
 }

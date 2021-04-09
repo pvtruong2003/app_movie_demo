@@ -9,6 +9,7 @@ import 'package:app_movie/model/movies.dart';
 import 'package:app_movie/model/movies_home.dart';
 import 'package:app_movie/screens/home/detail/home_movie_detail.dart';
 import 'package:app_movie/screens/home/item_trending.dart';
+import 'package:app_movie/screens/home/search/search_movie_screen.dart';
 import 'package:app_movie/screens/view_more/view_more_movie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -281,10 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
       pinned: true,
       elevation: 0,
       actions: [
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16),
-          child: Icon(Icons.search),
-        )
+        IconButton(
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (ctx) => SearchMovieScreen())),
+            icon: Icon(Icons.search)),
       ],
       leading: Icon(Icons.menu),
       expandedHeight: 300,

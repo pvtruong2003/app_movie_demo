@@ -81,7 +81,7 @@ class ProviderAPI extends BaseApiProvider {
       'search/movie?$API_KEY',
       queryParameters: queryParameters,
       options: RequestOptions(
-          method: 'GET', headers: <String, dynamic>{}, baseUrl: baseUrl),
+          method: 'GET', headers: <String, dynamic>{}, baseUrl: baseUrl2),
     );
     final GenericCollection<Movie> value =
         GenericCollection<Movie>.fromJson(_result.data);

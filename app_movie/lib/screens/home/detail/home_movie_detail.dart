@@ -82,7 +82,7 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
                           movie: movie,
                           onFavoritePressed: () => onFavoritePressed(movie),
                         ),
-                        buildRating(context, movie),
+                        _buildRating(context, movie),
                         _buildSpace(size),
                         _buildContentMovie(size),
                         _buildSpace(size),
@@ -349,7 +349,7 @@ class _HomeMovieDetailState extends State<HomeMovieDetail> {
     );
   }
 
-  SliverToBoxAdapter buildRating(BuildContext context, MovieDetail movie) {
+  SliverToBoxAdapter _buildRating(BuildContext context, MovieDetail movie) {
     return SliverToBoxAdapter(
       child: ItemRating(
         onRatingPressed: () {
